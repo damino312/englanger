@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id             Int               @id @default(autoincrement())
+  name                String
+  picture             String?
+  email               String            @unique
+  password            String
+  role_id             Int
+  study_group         String?
+  account_status      Boolean           @default(true)
+  last_studied_blocks String?
+  last_taught_blocks  String?
+  available_blocks    String?
+  created_blocks      String?
+  created_at          DateTime          @default(now())
+  updated_at          DateTime          @updatedAt
+  role                Role              @relation(fields: [role_id], references: [role_id])
+  learning_outcomes   LearningOutcome[]
+}
+
+model Group {
+  group_id   Int      @id @default(autoincrement())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Role {
+  role_id    Int      @id @default(autoincrement())
+  number     Int
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  users      User[]
+}
+
+model Block {
+  block_id          Int               @id @default(autoincrement())
+  name              String
+  subblock_order_id Int
+  created_at        DateTime          @default(now())
+  updated_at        DateTime          @updatedAt
+  subblock_order    SubblockOrder     @relation(fields: [subblock_order_id], references: [subblock_order_id])
+  learning_outcomes LearningOutcome[]
+}
+
+model SubblockOrder {
+  subblock_order_id Int          @id @default(autoincrement())
+  subblock_id       Int
+  type              String
+  order             Int
+  created_at        DateTime     @default(now())
+  updated_at        DateTime     @updatedAt
+  subblock_type     SubblockType @relation(fields: [subblock_id], references: [subblock_type_id])
+  blocks            Block[]
+}
+
+model SubblockType {
+  subblock_type_id Int             @id @default(autoincrement())
+  number           Int
+  name             String
+  created_at       DateTime        @default(now())
+  updated_at       DateTime        @updatedAt
+  subblock_orders  SubblockOrder[]
+  SubblockTest     SubblockTest[]
+  QuestionTest     QuestionTest[]
+}
+
+model SubblockTest {
+  subblock_test_id Int          @id @default(autoincrement())
+  subblock_id      Int
+  order            Int
+  name             String
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @updatedAt
+  subblock_type    SubblockType @relation(fields: [subblock_id], references: [subblock_type_id])
+}
+
+model QuestionTest {
+  question_test_id Int          @id @default(autoincrement())
+  subblock_id      Int
+  order            Int
+  question         String
+  record           String?
+  video            String?
+  picture          String?
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @updatedAt
+  subblock_type    SubblockType @relation(fields: [subblock_id], references: [subblock_type_id])
+  answer_tests     AnswerTest[]
+}
+
+model AnswerTest {
+  answer_test_id   Int          @id @default(autoincrement())
+  question_test_id Int
+  order            Int
+  name             String
+  is_answer        Boolean
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @updatedAt
+  question_test    QuestionTest @relation(fields: [question_test_id], references: [question_test_id])
+}
+
+model LearningOutcome {
+  learning_outcome_id Int      @id @default(autoincrement())
+  user_id             Int
+  block_id            Int
+  grade               Int
+  finished_at         DateTime @default(now())
+  user                User     @relation(fields: [user_id], references: [user_id])
+  block               Block    @relation(fields: [block_id], references: [block_id])
+}
