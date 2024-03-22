@@ -10,12 +10,11 @@ export default function Form() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const response = await signIn("credentials", {
-      email: formData.get("email"),
+      login: formData.get("login"),
       password: formData.get("password"),
       redirect: false,
     });
 
-    console.log({ response });
     if (!response?.error) {
       router.push("/");
       router.refresh();
@@ -27,9 +26,9 @@ export default function Form() {
       className="flex flex-col gap-2 mx-auto max-w-md mt-10"
     >
       <input
-        name="email"
+        name="login"
         className="border border-black text-black"
-        type="email"
+        type="text"
       />
       <input
         name="password"

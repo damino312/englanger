@@ -9,6 +9,7 @@ export default function Form() {
     const response = await fetch(`/api/auth/register`, {
       method: "POST",
       body: JSON.stringify({
+        login: formData.get("login"),
         email: formData.get("email"),
         password: formData.get("password"),
       }),
@@ -20,6 +21,11 @@ export default function Form() {
       onSubmit={handleSubmit}
       className="flex flex-col gap-2 mx-auto max-w-md mt-10"
     >
+      <input
+        name="login"
+        className="border border-black text-black"
+        type="text"
+      />
       <input
         name="email"
         className="border border-black text-black"
