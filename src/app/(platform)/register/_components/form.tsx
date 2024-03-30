@@ -1,36 +1,76 @@
 "use client";
 
-import { FormEvent } from "react";
+import { ElementRef, useRef, useState } from "react";
+import { Button, Input } from "@nextui-org/react";
+import { registerUser } from "@/actions/register";
+import { useAction } from "@/hooks/use-action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function Form() {
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const response = await fetch(`/api/auth/register`, {
-      method: "POST",
-      body: JSON.stringify({
-        email: formData.get("email"),
-        password: formData.get("password"),
-      }),
-    });
-    console.log({ response });
+  const router = useRouter();
+  const formRef = useRef<ElementRef<"form">>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { execute } = useAction(registerUser, {
+    onSuccess: () => {
+      setIsLoading(false);
+      toast.success("Пользователь зарегистрирован");
+      setTimeout(() => {
+        router.push("/login");
+      }, 1500);
+    },
+    onError: (error) => {
+      toast.error(error);
+      setIsLoading(false);
+    },
+  });
+
+  const onSubmit = (formData: FormData) => {
+    const login = formData.get("login") as string;
+    const email = formData.get("email") as string;
+    const name = formData.get("fio") as string;
+    const password = formData.get("password") as string;
+    execute({ login, email, password, name });
+    setIsLoading(true);
   };
   return (
     <form
-      onSubmit={handleSubmit}
+      ref={formRef}
+      action={onSubmit}
       className="flex flex-col gap-2 mx-auto max-w-md mt-10"
     >
-      <input
+      <Input
+        className="mb-4"
+        name="login"
+        type="text"
+        label="Логин"
+        placeholder="Введите логин"
+      />
+      <Input
+        className="mb-4"
+        name="fio"
+        type="text"
+        label="ФИО"
+        placeholder="Введите ФИО"
+      />
+      <Input
+        className="mb-4"
         name="email"
-        className="border border-black text-black"
         type="email"
+        label="Email"
+        placeholder="Введите email"
       />
-      <input
+      <Input
+        className="mb-4"
         name="password"
-        className="border border-black  text-black"
         type="password"
+        label="Пароль"
+        placeholder="Введите пароль"
       />
-      <button type="submit">Register</button>
+      <Button type="submit" color="success" isLoading={isLoading}>
+        <span className=" text-white font-semibold text-lg">Регистрация</span>
+      </Button>
     </form>
   );
 }

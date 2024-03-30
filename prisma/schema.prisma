@@ -21,7 +21,7 @@ model User {
   email               String            @unique
   password            String
   role_id             Int
-  study_group         String?
+  group_id            Int
   account_status      Boolean           @default(true)
   last_studied_blocks String?
   last_taught_blocks  String?
@@ -29,6 +29,7 @@ model User {
   created_blocks      String?
   created_at          DateTime          @default(now())
   updated_at          DateTime          @updatedAt
+  group               Group              @relation(fields: [group_id], references: [group_id])
   role                Role              @relation(fields: [role_id], references: [role_id])
   learning_outcomes   LearningOutcome[]
 }
@@ -38,6 +39,7 @@ model Group {
   name       String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  users      User[]
 }
 
 model Role {
