@@ -1,6 +1,12 @@
 import { Button, Link } from "@nextui-org/react";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-const MarketingPage = () => {
+const MarketingPage = async () => {
+  const session = await getServerSession();
+  if (session) {
+    redirect("/main");
+  }
   return (
     <div className="flex items-center justify-center flex-col pt-32">
       <div className=" bg-amber-100 p-3 rounded-md font-bold text-sm text-orange-800 mb-4 ">
