@@ -26,12 +26,13 @@ model User {
   last_studied_blocks String?
   last_taught_blocks  String?
   available_blocks    String?
-  created_blocks      String?
   created_at          DateTime          @default(now())
   updated_at          DateTime          @updatedAt
   group               Group              @relation(fields: [group_id], references: [group_id])
   role                Role              @relation(fields: [role_id], references: [role_id])
   learning_outcomes   LearningOutcome[]
+  blocks              Block[]
+  
 }
 
 model Group {
@@ -54,22 +55,24 @@ model Role {
 model Block {
   block_id          Int               @id @default(autoincrement())
   name              String
-  subblock_order_id Int
+  owner_id          Int
   created_at        DateTime          @default(now())
   updated_at        DateTime          @updatedAt
-  subblock_order    SubblockOrder     @relation(fields: [subblock_order_id], references: [subblock_order_id])
   learning_outcomes LearningOutcome[]
+  subblock_orders   SubblockOrder[]
+  owner             User              @relation(fields: [owner_id], references: [user_id])
 }
 
 model SubblockOrder {
   subblock_order_id Int          @id @default(autoincrement())
   subblock_id       Int
+  block_id          Int
   type              String
   order             Int
   created_at        DateTime     @default(now())
   updated_at        DateTime     @updatedAt
   subblock_type     SubblockType @relation(fields: [subblock_id], references: [subblock_type_id])
-  blocks            Block[]
+  block             Block        @relation(fields: [block_id], references: [block_id])
 }
 
 model SubblockType {

@@ -37,32 +37,29 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
         return {
-          id: user.user_id + "",
+          user_id: user.user_id + "",
           login: user.login,
         };
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user: any }) {
+    async jwt({ token, user }) {
+      // When user signs in, add their information to the token
       if (user) {
-        return {
-          ...token,
-          user_id: user.id,
-          login: user.login,
-        };
+        token.user_id = user.user_id; // Make sure it matches what you return in 'authorize'
+        token.login = user.login;
       }
       return token;
     },
-    async session({ session, user, token }) {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          user_id: token.user_id,
-          login: token.login,
-        },
+    async session({ session, token }) {
+      // Assign the user information to the session object
+      session.user = {
+        ...session.user,
+        user_id: token.user_id,
+        login: token.login,
       };
+      return session;
     },
   },
 };
