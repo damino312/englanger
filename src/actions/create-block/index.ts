@@ -11,7 +11,7 @@ import { authOptions } from "@/lib/auth";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const session = await getServerSession(authOptions);
-  if (!session) {
+  if (!session?.user.user_id) {
     return {
       error: "Необходима авторизация",
     };

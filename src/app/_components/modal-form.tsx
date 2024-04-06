@@ -20,7 +20,7 @@ export default function ModalComponent({
   const { execute } = useAction(createBlock, {
     onSuccess: (data) => {
       toast.success("Блок создан");
-      route.push(`/block/${data.block_id}`);
+      route.push(`/main/create-block/${data.block_id}`);
     },
     onError: (error) => {
       console.log(error);
@@ -37,7 +37,7 @@ export default function ModalComponent({
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1 text-black">
+        <ModalHeader className="flex flex-col gap-1 text-black text-3xl">
           {title}
         </ModalHeader>
         <ModalBody>

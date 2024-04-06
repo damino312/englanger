@@ -63,16 +63,42 @@ model Block {
   owner             User              @relation(fields: [owner_id], references: [user_id])
 }
 
+
+
 model SubblockOrder {
   subblock_order_id Int          @id @default(autoincrement())
-  subblock_id       Int
   block_id          Int
-  type              String
+  subblock_id       Int
+  subblock_test_id  Int?
+  subblock_description_id Int?
   order             Int
   created_at        DateTime     @default(now())
   updated_at        DateTime     @updatedAt
-  subblock_type     SubblockType @relation(fields: [subblock_id], references: [subblock_type_id])
   block             Block        @relation(fields: [block_id], references: [block_id])
+  subblock_test     SubblockTest? @relation(fields: [subblock_test_id], references: [subblock_test_id])
+  subblock_description SubblockDescription? @relation(fields: [subblock_description_id], references: [subblock_description_id])
+  
+}
+model SubblockTest {
+  subblock_test_id Int          @id @default(autoincrement())
+  subblock_type_id Int
+  name             String
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @updatedAt
+  subblock_type    SubblockType @relation(fields: [subblock_type_id], references: [subblock_type_id])
+  subblock_orders  SubblockOrder[]
+  
+}
+
+model SubblockDescription {
+  subblock_description_id Int          @id @default(autoincrement())
+  subblock_type_id        Int
+  name                    String
+  description            String
+  created_at             DateTime     @default(now())
+  updated_at             DateTime     @updatedAt
+  subblock_type          SubblockType @relation(fields: [subblock_type_id], references: [subblock_type_id])
+  subblock_orders        SubblockOrder[]
 }
 
 model SubblockType {
@@ -81,20 +107,12 @@ model SubblockType {
   name             String
   created_at       DateTime        @default(now())
   updated_at       DateTime        @updatedAt
-  subblock_orders  SubblockOrder[]
   SubblockTest     SubblockTest[]
+  SubblockDescription SubblockDescription[]
   QuestionTest     QuestionTest[]
 }
 
-model SubblockTest {
-  subblock_test_id Int          @id @default(autoincrement())
-  subblock_id      Int
-  order            Int
-  name             String
-  created_at       DateTime     @default(now())
-  updated_at       DateTime     @updatedAt
-  subblock_type    SubblockType @relation(fields: [subblock_id], references: [subblock_type_id])
-}
+
 
 model QuestionTest {
   question_test_id Int          @id @default(autoincrement())

@@ -29,16 +29,19 @@ const Header = () => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
       >
-        <Input
-          name="name"
-          id="name"
-          type="text"
-          label="Имя блока"
-          placeholder="Введите имя учебного блока"
-        />
-        <Button type="submit" color="primary">
-          Создать
-        </Button>
+        <div className="flex flex-col gap-4">
+          <Input
+            name="name"
+            id="name"
+            type="text"
+            label="Имя блока"
+            placeholder="Введите имя учебного блока"
+            size="lg"
+          />
+          <Button type="submit" color="primary" size="lg">
+            Создать
+          </Button>
+        </div>
       </ModalComponent>
     </div>
   );
