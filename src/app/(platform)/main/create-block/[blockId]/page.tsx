@@ -12,19 +12,19 @@ import {
 import SubblockContainer from "./_components/subblocks-container";
 
 export interface BlockData extends Block {
-  subblock_orders: SobblockOrderData[];
+  subblock_orders: SubblockOrderData[];
 }
 
-interface SobblockOrderData extends SubblockOrder {
+export interface SubblockOrderData extends SubblockOrder {
   subblock_test: SubblockTestData | null;
   subblock_description: SubblockDescription | null;
 }
 
-interface SubblockTestData extends SubblockTest {
+export interface SubblockTestData extends SubblockTest {
   test_questions: QuestionTestData[];
 }
 
-interface QuestionTestData extends QuestionTest {
+export interface QuestionTestData extends QuestionTest {
   answer_tests: AnswerTest[];
 }
 
