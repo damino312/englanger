@@ -7,7 +7,11 @@ import { useAction } from "@/hooks/use-action";
 import { createSubblockTest } from "@/actions/create-subblock-test";
 import { toast } from "sonner";
 
-const CreateSubblockContainer = () => {
+interface CreateSubblockContainerProps {
+  subblocksLength: number | undefined;
+}
+
+const CreateSubblockContainer = ({subblocksLength} : CreateSubblockContainerProps) => {
   const params = useParams();
   const router = useRouter();
 
@@ -29,13 +33,12 @@ const CreateSubblockContainer = () => {
   const onTestSubmit = (formData: FormData) => {
     const blockId = formData.get("blockId");
     const subblockId = formData.get("selectedSubblockId");
-    console.log(blockId);
 
     executeCreateSubblockTest({
       blockId: Number(blockId),
       subblockTypeId: Number(subblockId),
       name: "test",
-      order: 1,
+      order: (subblocksLength ?? 0) + 1,
     });
   };
   const onDescriptionSubmit = (formData: FormData) => {};
@@ -55,6 +58,7 @@ const CreateSubblockContainer = () => {
         )}
         <div
           className="w-[420px] border-b border-x rounded-b-md  shadow-xl  flex justify-center py-3  bg-slate-100 hover:bg-slate-200 hover:border-slate-200  transition-background cursor-pointer   "
+          role="button"
           onClick={() => setShowSubblockPicker(!showSubblockPicker)}
         >
           <svg

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -28,11 +22,10 @@ model User {
   available_blocks    String?
   created_at          DateTime          @default(now())
   updated_at          DateTime          @updatedAt
-  group               Group              @relation(fields: [group_id], references: [group_id])
-  role                Role              @relation(fields: [role_id], references: [role_id])
-  learning_outcomes   LearningOutcome[]
   blocks              Block[]
-  
+  learning_outcomes   LearningOutcome[]
+  group               Group             @relation(fields: [group_id], references: [group_id])
+  role                Role              @relation(fields: [role_id], references: [role_id])
 }
 
 model Group {
@@ -58,65 +51,59 @@ model Block {
   owner_id          Int
   created_at        DateTime          @default(now())
   updated_at        DateTime          @updatedAt
+  owner             User              @relation(fields: [owner_id], references: [user_id])
   learning_outcomes LearningOutcome[]
   subblock_orders   SubblockOrder[]
-  owner             User              @relation(fields: [owner_id], references: [user_id])
 }
-
-
 
 model SubblockOrder {
-  subblock_order_id Int          @id @default(autoincrement())
-  block_id          Int
-  subblock_id       Int
-  subblock_test_id  Int?
+  subblock_order_id       Int                  @id @default(autoincrement())
+  block_id                Int
+  order                   Int
+  created_at              DateTime             @default(now())
+  updated_at              DateTime             @updatedAt
   subblock_description_id Int?
-  order             Int
-  created_at        DateTime     @default(now())
-  updated_at        DateTime     @updatedAt
-  block             Block        @relation(fields: [block_id], references: [block_id])
-  subblock_test     SubblockTest? @relation(fields: [subblock_test_id], references: [subblock_test_id])
-  subblock_description SubblockDescription? @relation(fields: [subblock_description_id], references: [subblock_description_id])
-  
-}
-model SubblockTest {
-  subblock_test_id Int          @id @default(autoincrement())
-  subblock_type_id Int
-  name             String
-  created_at       DateTime     @default(now())
-  updated_at       DateTime     @updatedAt
-  subblock_type    SubblockType @relation(fields: [subblock_type_id], references: [subblock_type_id])
-  subblock_orders  SubblockOrder[]
-  
+  subblock_test_id        Int?
+  block                   Block                @relation(fields: [block_id], references: [block_id])
+  subblock_description    SubblockDescription? @relation(fields: [subblock_description_id], references: [subblock_description_id])
+  subblock_test           SubblockTest?        @relation(fields: [subblock_test_id], references: [subblock_test_id])
 }
 
+
+
 model SubblockDescription {
-  subblock_description_id Int          @id @default(autoincrement())
+  subblock_description_id Int             @id @default(autoincrement())
   subblock_type_id        Int
   name                    String
-  description            String
-  created_at             DateTime     @default(now())
-  updated_at             DateTime     @updatedAt
-  subblock_type          SubblockType @relation(fields: [subblock_type_id], references: [subblock_type_id])
-  subblock_orders        SubblockOrder[]
+  description             String
+  created_at              DateTime        @default(now())
+  updated_at              DateTime        @updatedAt
+  subblock_type           SubblockType    @relation(fields: [subblock_type_id], references: [subblock_type_id])
+  subblock_orders         SubblockOrder[]
 }
 
 model SubblockType {
-  subblock_type_id Int             @id @default(autoincrement())
-  number           Int
+  subblock_type_id    Int                   @id @default(autoincrement())
+  number              Int
+  name                String
+  created_at          DateTime              @default(now())
+  updated_at          DateTime              @updatedAt
+  SubblockDescription SubblockDescription[]
+  SubblockTest        SubblockTest[]
+}
+model SubblockTest {
+  subblock_test_id Int             @id @default(autoincrement())
+  subblock_type_id Int
   name             String
   created_at       DateTime        @default(now())
   updated_at       DateTime        @updatedAt
-  SubblockTest     SubblockTest[]
-  SubblockDescription SubblockDescription[]
-  QuestionTest     QuestionTest[]
+  subblock_orders  SubblockOrder[]
+  test_questions   QuestionTest[]
+  subblock_type    SubblockType    @relation(fields: [subblock_type_id], references: [subblock_type_id])
 }
-
-
-
 model QuestionTest {
   question_test_id Int          @id @default(autoincrement())
-  subblock_id      Int
+  subblock_test_id Int
   order            Int
   question         String
   record           String?
@@ -124,8 +111,8 @@ model QuestionTest {
   picture          String?
   created_at       DateTime     @default(now())
   updated_at       DateTime     @updatedAt
-  subblock_type    SubblockType @relation(fields: [subblock_id], references: [subblock_type_id])
   answer_tests     AnswerTest[]
+  subblock_test    SubblockTest @relation(fields: [subblock_test_id], references: [subblock_test_id])
 }
 
 model AnswerTest {
@@ -145,6 +132,6 @@ model LearningOutcome {
   block_id            Int
   grade               Int
   finished_at         DateTime @default(now())
-  user                User     @relation(fields: [user_id], references: [user_id])
   block               Block    @relation(fields: [block_id], references: [block_id])
+  user                User     @relation(fields: [user_id], references: [user_id])
 }

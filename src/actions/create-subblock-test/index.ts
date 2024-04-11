@@ -11,13 +11,11 @@ import { authOptions } from "@/lib/auth";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const session = await getServerSession(authOptions);
-  console.log("here1");
   if (!session?.user.user_id) {
     return {
       error: "Необходима авторизация",
     };
   }
-  console.log(data);
   try {
     const createdSubblock = await db.$transaction(async (tx) => {
       const testSubblock = await db.subblockTest.create({
@@ -26,16 +24,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
           subblock_type_id: data.subblockTypeId,
         },
       });
-      const subblock = await db.subblock.create({
-        data: {
-          some_subblock_id: testSubblock.subblock_test_id,
-        },
-      });
       const subblockOrder = await db.subblockOrder.create({
         data: {
           block_id: data.blockId,
           order: data.order,
-          subblock_id: subblock.subblock_id,
+          subblock_test_id: testSubblock.subblock_test_id,
         },
       });
       return testSubblock;
