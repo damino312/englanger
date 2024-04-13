@@ -6,12 +6,15 @@ import { useParams, useRouter } from "next/navigation";
 import { useAction } from "@/hooks/use-action";
 import { createSubblockTest } from "@/actions/create-subblock-test";
 import { toast } from "sonner";
+import { useEventListener } from "usehooks-ts";
 
 interface CreateSubblockContainerProps {
   subblocksLength: number | undefined;
 }
 
-const CreateSubblockContainer = ({subblocksLength} : CreateSubblockContainerProps) => {
+const CreateSubblockContainer = ({
+  subblocksLength,
+}: CreateSubblockContainerProps) => {
   const params = useParams();
   const router = useRouter();
 
@@ -29,6 +32,13 @@ const CreateSubblockContainer = ({subblocksLength} : CreateSubblockContainerProp
       toast.error(error);
     },
   });
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setSelectedSubblockId(0);
+      setShowSubblockPicker(false);
+    }
+  };
 
   const onTestSubmit = (formData: FormData) => {
     const blockId = formData.get("blockId");
@@ -50,14 +60,16 @@ const CreateSubblockContainer = ({subblocksLength} : CreateSubblockContainerProp
     if (Number(subblockId) === 2) onDescriptionSubmit(formData);
     if (Number(subblockId) === 3) onPronounicationSubmit(formData);
   };
+
+  useEventListener("keydown", onKeyDown);
   return (
-    <div className="w-full flex justify-center px-10">
+    <div className="w-full flex justify-center pb-10">
       <form action={onSubmit} className="flex flex-col items-center">
         {showSubblockPicker && (
           <SubblockPicker setSelectedSubblockId={setSelectedSubblockId} />
         )}
         <div
-          className="w-[420px] border-b border-x rounded-b-md  shadow-xl  flex justify-center py-3  bg-slate-100 hover:bg-slate-200 hover:border-slate-200  transition-background cursor-pointer   "
+          className="w-[420px] border-1.5 border-black rounded-xl shadow-xl flex justify-center py-3 bg-slate-100 hover:bg-slate-200  transition-background cursor-pointer"
           role="button"
           onClick={() => setShowSubblockPicker(!showSubblockPicker)}
         >

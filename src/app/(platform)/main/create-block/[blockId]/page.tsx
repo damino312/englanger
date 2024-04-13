@@ -7,7 +7,6 @@ import {
   SubblockDescription,
   SubblockOrder,
   SubblockTest,
-  
 } from "@prisma/client";
 import SubblockContainer from "./_components/subblocks-container";
 
@@ -40,9 +39,9 @@ const CreateBlockPage = async ({ params }: { params: { blockId: string } }) => {
             include: {
               test_questions: {
                 include: {
-                  answer_tests: true
+                  answer_tests: true,
                 },
-              }
+              },
             },
           },
           subblock_description: true,
@@ -52,10 +51,9 @@ const CreateBlockPage = async ({ params }: { params: { blockId: string } }) => {
   });
 
   const subblocksLength = block?.subblock_orders.length;
-  
 
   return (
-    <div>
+    <div className="w-full h-full pb-10">
       <SubblockContainer data={block} />
       <CreateSubblockContainer subblocksLength={subblocksLength} />
     </div>

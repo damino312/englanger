@@ -9,7 +9,7 @@ const Header = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
-    <div className="w-full h-[80px] border-b shadow-lg">
+    <div className="w-full h-[80px] border-b shadow-lg mb-6">
       <div className="px-32 w-full h-full flex items-center justify-between  ">
         <div className="flex gap-8 items-center">
           <div>Logo</div>

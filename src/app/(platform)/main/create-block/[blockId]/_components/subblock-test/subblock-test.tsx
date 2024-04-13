@@ -1,41 +1,54 @@
-"use client"
+"use client";
 
 import { useAction } from "@/hooks/use-action";
-import { SubblockOrderData } from "../page";
+import { SubblockOrderData } from "../../page";
 import { createQuestionTest } from "@/actions/create-question-test";
 import { useRef } from "react";
 import { toast } from "sonner";
 import SubblockTestQuestion from "./subblock-test-question";
+import { useRouter } from "next/navigation";
 
 //TODO ЗАПРЕТИТЬ ДОБАВЛЕНИЕ НОВЫЙ ВОПРОСОВ, ПОКА ДОБАВЛЕНИЕ СТАРОГО В ОБРАБОТКЕ
-const SubblockTest = ({subblock, blockId} : {subblock: SubblockOrderData, blockId: number}) => {
-
+const SubblockTest = ({
+  subblock,
+  blockId,
+}: {
+  subblock: SubblockOrderData;
+  blockId: number;
+}) => {
   const addQuestionRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
 
-  const {execute: createQuestionTestExecute} = useAction(createQuestionTest, {
+  const { execute: createQuestionTestExecute } = useAction(createQuestionTest, {
     onSuccess: () => {
+      router.refresh();
       toast.success("Вопрос добавлен");
     },
     onError: (error) => {
       toast.error(error);
     },
-  })
+  });
 
   const onCreatingQuestion = (formData: FormData) => {
     const subblockTestId = formData.get("subblock_test_id");
     const order = formData.get("order");
-    const blockId = formData.get("block_id");
     createQuestionTestExecute({
       subblock_test_id: Number(subblockTestId),
       order: Number(order),
-      block_id: Number(blockId)
-    })
-  }
+    });
+  };
   return (
-    <div className="border p-2 mx-2">
-      {subblock.subblock_test?.test_questions.sort( (a, b) => a.order - b.order).map((question) => 
-        <SubblockTestQuestion key={question.question_test_id} question={question} blockId={blockId} />
-      )}
+    <div className="border border-black rounded-2xl p-2 mx-2 mb-8">
+      {subblock.subblock_test?.test_questions
+        .sort((a, b) => a.order - b.order)
+        .map((question, index) => (
+          <SubblockTestQuestion
+            key={question.question_test_id}
+            question={question}
+            blockId={blockId}
+            index={index}
+          />
+        ))}
       <form
         action={onCreatingQuestion}
         className="w-full flex justify-center mb-2 "
@@ -67,7 +80,6 @@ const SubblockTest = ({subblock, blockId} : {subblock: SubblockOrderData, blockI
           name="order"
           value={(subblock.subblock_test?.test_questions.length ?? 0) + 1}
         />
-        <input type="hidden" name="block_id" value={blockId} />
       </form>
     </div>
   );

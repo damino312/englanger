@@ -17,7 +17,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       error: "Необходима авторизация",
     };
   }
-  const {order, subblock_test_id, block_id} = data
+  const { order, subblock_test_id } = data;
   try {
     const createdQuestion = await db.$transaction(async (tx) => {
       const questionTest = await db.questionTest.create({
@@ -25,20 +25,20 @@ const handler = async (data: InputType): Promise<ReturnType> => {
           subblock_test_id: subblock_test_id,
           order: order,
           question: "Вопрос",
-        }
-      })
+        },
+      });
       const answersData = [
         {
           question_test_id: questionTest.question_test_id,
           name: "Ответ 1",
           is_answer: true,
-          order: 1
+          order: 1,
         },
         {
           question_test_id: questionTest.question_test_id,
           name: "Ответ 2",
           is_answer: false,
-          order: 2
+          order: 2,
         },
       ];
       const questions = await db.answerTest.createMany({
@@ -46,8 +46,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       });
       return questionTest;
     });
-    
-    revalidatePath("/main/create-block/" + { block_id });
+
     return { data: createdQuestion };
   } catch (error) {
     console.error(error);
