@@ -112,7 +112,7 @@ model QuestionTest {
   created_at       DateTime     @default(now())
   updated_at       DateTime     @updatedAt
   answer_tests     AnswerTest[]
-  subblock_test    SubblockTest @relation(fields: [subblock_test_id], references: [subblock_test_id])
+  subblock_test    SubblockTest @relation(fields: [subblock_test_id], references: [subblock_test_id], onDelete: Cascade)
 }
 
 model AnswerTest {
@@ -123,7 +123,7 @@ model AnswerTest {
   is_answer        Boolean
   created_at       DateTime     @default(now())
   updated_at       DateTime     @updatedAt
-  question_test    QuestionTest @relation(fields: [question_test_id], references: [question_test_id])
+  question_test    QuestionTest @relation(fields: [question_test_id], references: [question_test_id], onDelete: Cascade)
 }
 
 model LearningOutcome {

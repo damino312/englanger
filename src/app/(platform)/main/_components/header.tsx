@@ -1,6 +1,8 @@
 "use client";
 import ModalComponent from "@/app/_components/modal-form";
-import { Button, useDisclosure, Input } from "@nextui-org/react";
+import { Button } from "@/app/_components/ui/button";
+import { Input } from "@/app/_components/ui/input";
+import { useDisclosure } from "@nextui-org/react";
 import Link from "next/link";
 
 const Header = () => {
@@ -15,9 +17,9 @@ const Header = () => {
           <Link href="/studying">Я учу</Link>
           <Button
             type="button"
-            onPress={onOpen}
-            color="success"
             variant="ghost"
+            color="primary"
+            onClick={onOpen}
           >
             Создать блок
           </Button>
@@ -34,9 +36,7 @@ const Header = () => {
             name="name"
             id="name"
             type="text"
-            label="Имя блока"
             placeholder="Введите имя учебного блока"
-            size="lg"
           />
           <Button type="submit" color="primary" size="lg">
             Создать

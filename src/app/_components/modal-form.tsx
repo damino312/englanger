@@ -1,9 +1,16 @@
 "use client";
 import { createBlock } from "@/actions/create-block";
 import { useAction } from "@/hooks/use-action";
-import { Modal, ModalContent, ModalHeader, ModalBody } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 
 export default function ModalComponent({
   children,
@@ -30,20 +37,21 @@ export default function ModalComponent({
 
   const onSubmit = (formData: FormData) => {
     const name = formData.get("name") as string;
-    console.log(name);
 
     execute({ name });
   };
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-1 text-black text-3xl">
-          {title}
-        </ModalHeader>
-        <ModalBody>
-          <form action={onSubmit}>{children}</form>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="flex flex-col gap-1 text-black text-3xl">
+            {title}
+          </DialogTitle>
+          <DialogDescription>
+            <form action={onSubmit}>{children}</form>
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
   );
 }

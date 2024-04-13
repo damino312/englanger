@@ -33,8 +33,8 @@ const SubblockTest = ({subblock, blockId} : {subblock: SubblockOrderData, blockI
   }
   return (
     <div className="border p-2 mx-2">
-      {subblock.subblock_test?.test_questions.map((question) => 
-        <SubblockTestQuestion key={question.question_test_id} question={question} />
+      {subblock.subblock_test?.test_questions.sort( (a, b) => a.order - b.order).map((question) => 
+        <SubblockTestQuestion key={question.question_test_id} question={question} blockId={blockId} />
       )}
       <form
         action={onCreatingQuestion}
