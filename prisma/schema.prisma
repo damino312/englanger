@@ -60,6 +60,7 @@ model SubblockOrder {
   subblock_order_id       Int                  @id @default(autoincrement())
   block_id                Int
   order                   Int
+  name                    String?
   created_at              DateTime             @default(now())
   updated_at              DateTime             @updatedAt
   subblock_description_id Int?
@@ -74,7 +75,6 @@ model SubblockOrder {
 model SubblockDescription {
   subblock_description_id Int             @id @default(autoincrement())
   subblock_type_id        Int
-  name                    String
   description             String
   created_at              DateTime        @default(now())
   updated_at              DateTime        @updatedAt
@@ -94,7 +94,6 @@ model SubblockType {
 model SubblockTest {
   subblock_test_id Int             @id @default(autoincrement())
   subblock_type_id Int
-  name             String
   created_at       DateTime        @default(now())
   updated_at       DateTime        @updatedAt
   subblock_orders  SubblockOrder[]

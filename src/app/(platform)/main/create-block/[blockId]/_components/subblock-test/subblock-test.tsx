@@ -43,7 +43,7 @@ const SubblockTest = ({
     <div className="border border-black rounded-2xl p-2 mx-2 mb-8">
       <div className="flex items-center justify-between">
         <h3 className="text-2xl ml-12 font-semibold ">
-          Название подблока: {subblock.subblock_test?.name}
+          Название подблока: {subblock.name}
         </h3>
         <SubblockDeleteForm
           subblockId={subblock.subblock_test_id as number}
