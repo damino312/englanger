@@ -7,8 +7,10 @@ const SubblockContainer = ({ data }: { data: BlockData | null }) => {
   }
 
   return (
-    <div className=" h-full mx-8  ">
-      <h1 className=" text-center font-semibold text-2xl">{data.name}</h1>
+    <div className=" h-full mx-8">
+      <h1 className=" text-center font-semibold text-2xl mb-4">
+        Название блока: {data.name}
+      </h1>
       {data &&
         data.subblock_orders.map((subblock) => {
           if (subblock.subblock_test_id) {

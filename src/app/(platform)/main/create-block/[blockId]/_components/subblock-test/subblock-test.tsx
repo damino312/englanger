@@ -7,6 +7,7 @@ import { useRef } from "react";
 import { toast } from "sonner";
 import SubblockTestQuestion from "./subblock-test-question";
 import { useRouter } from "next/navigation";
+import SubblockDeleteForm from "../subblock-delete-form";
 
 //TODO ЗАПРЕТИТЬ ДОБАВЛЕНИЕ НОВЫЙ ВОПРОСОВ, ПОКА ДОБАВЛЕНИЕ СТАРОГО В ОБРАБОТКЕ
 const SubblockTest = ({
@@ -37,8 +38,19 @@ const SubblockTest = ({
       order: Number(order),
     });
   };
+  console.log(subblock.subblock_test_id);
   return (
     <div className="border border-black rounded-2xl p-2 mx-2 mb-8">
+      <div className="flex items-center justify-between">
+        <h3 className="text-2xl ml-12 font-semibold ">
+          Название подблока: {subblock.subblock_test?.name}
+        </h3>
+        <SubblockDeleteForm
+          subblockId={subblock.subblock_test_id as number}
+          type={1}
+        />
+      </div>
+
       {subblock.subblock_test?.test_questions
         .sort((a, b) => a.order - b.order)
         .map((question, index) => (
@@ -54,7 +66,7 @@ const SubblockTest = ({
         className="w-full flex justify-center mb-2 "
         ref={addQuestionRef}
       >
-        <button className="min-w-[90px] flex justify-center  rounded-b-md  bg-slate-100 hover:bg-slate-200 hover:border-slate-200 transition-background cursor-pointer rounded-xl">
+        <button className="min-w-[90px] w-full max-w-2xl flex justify-center bg-slate-100 hover:bg-slate-200 hover:border-slate-200 transition-background cursor-pointer rounded-xl">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

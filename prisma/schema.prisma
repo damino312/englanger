@@ -64,7 +64,7 @@ model SubblockOrder {
   updated_at              DateTime             @updatedAt
   subblock_description_id Int?
   subblock_test_id        Int?
-  block                   Block                @relation(fields: [block_id], references: [block_id])
+  block                   Block                @relation(fields: [block_id], references: [block_id], onDelete: Cascade)
   subblock_description    SubblockDescription? @relation(fields: [subblock_description_id], references: [subblock_description_id])
   subblock_test           SubblockTest?        @relation(fields: [subblock_test_id], references: [subblock_test_id])
 }
