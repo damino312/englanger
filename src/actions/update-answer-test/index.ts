@@ -16,20 +16,47 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       error: "Необходима авторизация",
     };
   }
-  const { answer_test_id, order, name, is_answer } = data;
+  const {
+    answer_test_id,
+    order,
+    name,
+    is_answer,
+    is_changing_right_answer,
+    question_test_id,
+  } = data;
   try {
-    const updatedAnswer = await db.answerTest.update({
-      where: {
-        answer_test_id: answer_test_id,
-      },
-      data: {
-        order: order,
-        name: name,
-        is_answer: is_answer,
-      },
-    });
-    // revalidatePath("/main/create-block/" + { block_id });
-    return { data: updatedAnswer };
+    let updateAnswer;
+    if (is_changing_right_answer) {
+      const updatedFalseAnswers = await db.answerTest.updateMany({
+        where: {
+          question_test_id: question_test_id,
+        },
+        data: {
+          is_answer: false,
+        },
+      });
+      updateAnswer = await db.answerTest.update({
+        where: {
+          answer_test_id: answer_test_id,
+        },
+        data: {
+          is_answer: true,
+        },
+      });
+      return { data: updateAnswer };
+    } else {
+      updateAnswer = await db.answerTest.update({
+        where: {
+          answer_test_id: answer_test_id,
+        },
+        data: {
+          order: order,
+          name: name,
+          is_answer: is_answer,
+        },
+      });
+      return { data: updateAnswer };
+    }
   } catch (error) {
     console.error(error);
     return {

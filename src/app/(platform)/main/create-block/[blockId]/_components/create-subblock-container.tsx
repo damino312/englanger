@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import SubblockPicker from "./subblock-picker";
 import { useParams, useRouter } from "next/navigation";
 import { useAction } from "@/hooks/use-action";
 import { createSubblockTest } from "@/actions/create-subblock-test";
 import { toast } from "sonner";
-import { useEventListener } from "usehooks-ts";
+import { useEventListener, useOnClickOutside } from "usehooks-ts";
 
 interface CreateSubblockContainerProps {
   subblocksLength: number | undefined;
@@ -20,6 +20,8 @@ const CreateSubblockContainer = ({
 
   const [showSubblockPicker, setShowSubblockPicker] = useState<boolean>(false);
   const [selectedSubblockId, setSelectedSubblockId] = useState<number>(0);
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   const { execute: executeCreateSubblockTest } = useAction(createSubblockTest, {
     onSuccess: () => {
@@ -61,10 +63,18 @@ const CreateSubblockContainer = ({
     if (Number(subblockId) === 3) onPronounicationSubmit(formData);
   };
 
+  useOnClickOutside(formRef, () => {
+    setSelectedSubblockId(0);
+    setShowSubblockPicker(false);
+  });
   useEventListener("keydown", onKeyDown);
   return (
     <div className="w-full flex justify-center pb-10">
-      <form action={onSubmit} className="flex flex-col items-center">
+      <form
+        action={onSubmit}
+        className="flex flex-col items-center"
+        ref={formRef}
+      >
         {showSubblockPicker && (
           <SubblockPicker setSelectedSubblockId={setSelectedSubblockId} />
         )}

@@ -12,17 +12,19 @@ const SubblockContainer = ({ data }: { data: BlockData | null }) => {
         Название блока: {data.name}
       </h1>
       {data &&
-        data.subblock_orders.map((subblock) => {
-          if (subblock.subblock_test_id) {
-            return (
-              <SubblockTest
-                key={subblock.subblock_test_id}
-                subblock={subblock}
-                blockId={data.block_id}
-              />
-            );
-          }
-        })}
+        data.subblock_orders
+          .sort((a, b) => a.order - b.order)
+          .map((subblock) => {
+            if (subblock.subblock_test_id) {
+              return (
+                <SubblockTest
+                  key={subblock.subblock_test_id}
+                  subblock={subblock}
+                  blockId={data.block_id}
+                />
+              );
+            }
+          })}
     </div>
   );
 };

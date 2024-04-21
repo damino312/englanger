@@ -21,10 +21,12 @@ const SubblockTestQuestion = ({
   blockId: number;
   index: number;
 }) => {
+  const router = useRouter();
+
   const [isEditing, setIsEditing] = useState<boolean>(false);
+
   const formRef = useRef<HTMLFormElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const router = useRouter();
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
@@ -143,7 +145,6 @@ const SubblockTestQuestion = ({
           />
         </div>
       )}
-
       {question.answer_tests
         .sort((a, b) => a.order - b.order)
         .map((answer, index) => (

@@ -3,11 +3,14 @@
 import { useAction } from "@/hooks/use-action";
 import { SubblockOrderData } from "../../page";
 import { createQuestionTest } from "@/actions/create-question-test";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import SubblockTestQuestion from "./subblock-test-question";
 import { useRouter } from "next/navigation";
 import SubblockDeleteForm from "../subblock-delete-form";
+import { useEventListener, useOnClickOutside } from "usehooks-ts";
+import { FormInput } from "@/app/_components/form/form-input";
+import { updateSubblockTest } from "@/actions/update-subblock-test";
 
 //TODO ЗАПРЕТИТЬ ДОБАВЛЕНИЕ НОВЫЙ ВОПРОСОВ, ПОКА ДОБАВЛЕНИЕ СТАРОГО В ОБРАБОТКЕ
 const SubblockTest = ({
@@ -17,8 +20,13 @@ const SubblockTest = ({
   subblock: SubblockOrderData;
   blockId: number;
 }) => {
-  const addQuestionRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
+
+  const [isRenaming, setIsRenaming] = useState<boolean>(false);
+
+  const formRef = useRef<HTMLFormElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const addQuestionRef = useRef<HTMLFormElement>(null);
 
   const { execute: createQuestionTestExecute } = useAction(createQuestionTest, {
     onSuccess: () => {
@@ -29,6 +37,37 @@ const SubblockTest = ({
       toast.error(error);
     },
   });
+  const { execute: updateSubblockTestExecute } = useAction(updateSubblockTest, {
+    onSuccess: () => {
+      router.refresh();
+      toast.success("Название подблока изменено");
+      disableRenaming();
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+
+  const enableRenaming = () => {
+    setIsRenaming(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+    });
+  };
+  const disableRenaming = () => {
+    setIsRenaming(false);
+  };
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      disableRenaming();
+    }
+  };
+
+  useOnClickOutside(formRef, () => {
+    disableRenaming();
+  });
+
+  useEventListener("keydown", onKeyDown);
 
   const onCreatingQuestion = (formData: FormData) => {
     const subblockTestId = formData.get("subblock_test_id");
@@ -38,17 +77,55 @@ const SubblockTest = ({
       order: Number(order),
     });
   };
-  console.log(subblock.subblock_test_id);
+
+  const onRenameSubblock = (formData: FormData) => {
+    const subblockId = formData.get("subblock_order_id");
+    const name = formData.get("name");
+    const order = formData.get("order");
+
+    updateSubblockTestExecute({
+      subblock_order_id: Number(subblockId),
+      name: String(name),
+      order: Number(order),
+    });
+  };
+
   return (
     <div className="border border-black rounded-2xl p-2 mx-2 mb-8">
       <div className="flex items-center justify-between">
-        <h3 className="text-2xl ml-12 font-semibold ">
-          Название подблока: {subblock.name}
-        </h3>
-        <SubblockDeleteForm
-          subblockId={subblock.subblock_test_id as number}
-          type={1}
-        />
+        {isRenaming ? (
+          <form
+            action={onRenameSubblock}
+            ref={formRef}
+            className="ml-12 min-w-[150px] max-w-full w-full "
+          >
+            <FormInput
+              id="subblock_id"
+              name="name"
+              ref={inputRef}
+              defaultValue={subblock.name as string}
+            />
+            <input
+              type="hidden"
+              name="subblock_order_id"
+              value={subblock.subblock_order_id}
+            />
+            <input type="hidden" name="order" value={subblock.order} />
+          </form>
+        ) : (
+          <div className="w-full flex items-center justify-between">
+            <h3
+              className="text-2xl ml-12 font-semibold"
+              onClick={enableRenaming}
+            >
+              Название подблока: {subblock.name}
+            </h3>
+            <SubblockDeleteForm
+              subblockId={subblock.subblock_test_id as number}
+              type={1}
+            />
+          </div>
+        )}
       </div>
 
       {subblock.subblock_test?.test_questions
