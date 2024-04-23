@@ -52,6 +52,7 @@ model Block {
   is_saved          Boolean           @default(false)
   created_at        DateTime          @default(now())
   updated_at        DateTime          @updatedAt
+  is_saved          Boolean           @default(false)
   owner             User              @relation(fields: [owner_id], references: [user_id])
   learning_outcomes LearningOutcome[]
   subblock_orders   SubblockOrder[]
@@ -61,18 +62,17 @@ model SubblockOrder {
   subblock_order_id       Int                  @id @default(autoincrement())
   block_id                Int
   order                   Int
-  name                    String?
   created_at              DateTime             @default(now())
   updated_at              DateTime             @updatedAt
   subblock_description_id Int?
   subblock_test_id        Int?
+  name                    String?
   subblock_pronounce_id   Int?
   block                   Block                @relation(fields: [block_id], references: [block_id], onDelete: Cascade)
   subblock_description    SubblockDescription? @relation(fields: [subblock_description_id], references: [subblock_description_id])
-  subblock_test           SubblockTest?        @relation(fields: [subblock_test_id], references: [subblock_test_id])
   subblock_pronounce      SubblockPronounce?   @relation(fields: [subblock_pronounce_id], references: [subblock_pronounce_id])
+  subblock_test           SubblockTest?        @relation(fields: [subblock_test_id], references: [subblock_test_id])
 }
-
 
 model SubblockPronounce {
   subblock_pronounce_id Int             @id @default(autoincrement())
@@ -85,8 +85,6 @@ model SubblockPronounce {
   subblock_orders       SubblockOrder[]
   subblock_type         SubblockType    @relation(fields: [subblock_type_id], references: [subblock_type_id])
 }
-
-
 
 model SubblockDescription {
   subblock_description_id Int             @id @default(autoincrement())
@@ -105,18 +103,20 @@ model SubblockType {
   created_at          DateTime              @default(now())
   updated_at          DateTime              @updatedAt
   SubblockDescription SubblockDescription[]
-  SubblockTest        SubblockTest[]
   SubblockPronounce   SubblockPronounce[]
+  SubblockTest        SubblockTest[]
 }
+
 model SubblockTest {
   subblock_test_id Int             @id @default(autoincrement())
   subblock_type_id Int
   created_at       DateTime        @default(now())
   updated_at       DateTime        @updatedAt
-  subblock_orders  SubblockOrder[]
   test_questions   QuestionTest[]
+  subblock_orders  SubblockOrder[]
   subblock_type    SubblockType    @relation(fields: [subblock_type_id], references: [subblock_type_id])
 }
+
 model QuestionTest {
   question_test_id Int          @id @default(autoincrement())
   subblock_test_id Int

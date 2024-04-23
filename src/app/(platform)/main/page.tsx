@@ -2,7 +2,7 @@ import { LastBlocks } from "./_components/last-blocks";
 const MainPage = () => {
   return (
     <div className="w-full h-full">
-      <div className="w-full h-full px-32 pt-16 ">
+      <div className="w-full h-full px-32 ">
         <h2 className="text-3xl font-semibold mb-4">
           Что последнее я проходил:
         </h2>
