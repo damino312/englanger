@@ -10,6 +10,7 @@ import {
 } from "@prisma/client";
 import SubblockContainer from "./_components/subblocks-container";
 import BlockSaveContainer from "./_components/block-save-container";
+import { redirect } from "next/navigation";
 
 export interface BlockData extends Block {
   subblock_orders: SubblockOrderData[];
@@ -52,13 +53,19 @@ const CreateBlockPage = async ({ params }: { params: { blockId: string } }) => {
     },
   });
 
+  if (!block) {
+    redirect("/main");
+  }
+
   const subblocksLength = block?.subblock_orders.length;
+
+  const subblockCount: number | undefined = block?.subblock_orders.length;
 
   return (
     <div className="w-full h-full pb-10">
       <SubblockContainer data={block} />
       <CreateSubblockContainer subblocksLength={subblocksLength} />
-      <BlockSaveContainer blockId={blockId} />
+      <BlockSaveContainer blockId={blockId} subblockCount={subblockCount} />
     </div>
   );
 };

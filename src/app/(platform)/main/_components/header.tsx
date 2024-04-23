@@ -1,5 +1,5 @@
 "use client";
-import ModalComponent from "@/app/_components/modal-form";
+import ModalComponent from "@/app/(platform)/main/_components/modal-create-block";
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
 import { useDisclosure } from "@nextui-org/react";
@@ -50,7 +50,12 @@ const Header = () => {
             autoComplete="off"
             style={{ color: "black", fontWeight: 500 }}
           />
-          <Button type="submit" color="primary" size="lg">
+          <Button
+            onClick={onOpenChange}
+            type="submit"
+            color="primary"
+            size="lg"
+          >
             Создать
           </Button>
         </div>

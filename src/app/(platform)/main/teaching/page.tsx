@@ -18,7 +18,7 @@ const TeachingPage = async () => {
     <div className="w-full h-full px-32">
       <h1 className=" text-center font-bold text-3xl">Мои учебные блоки</h1>
       {blocks.length > 0 ? (
-        <div className="flex gap-4 mt-6">
+        <div className="grid grid-cols-4 gap-4 content-center justify-items-stretch mt-6">
           {blocks
             .sort((a, b) => {
               if (a.name < b.name) {

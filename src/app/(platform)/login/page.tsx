@@ -2,10 +2,11 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Form from "./_components/form";
 import { Link } from "@nextui-org/react";
+import { authOptions } from "@/lib/auth";
 
 export default async function LoginPage() {
-  const session = await getServerSession();
-  if (session) {
+  const session = await getServerSession(authOptions);
+  if (session?.user.user_id) {
     redirect("/");
   }
   return (

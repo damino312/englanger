@@ -6,7 +6,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { DeleteBlock } from "./schema";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 // import { createAuditLog } from "@/lib/create-audit-log";
 // import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
@@ -25,7 +25,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         block_id: block_id,
       },
     });
-    revalidatePath("/main/teaching");
+    revalidateTag("blocks");
     return { data: deletedBlock };
   } catch (error) {
     console.error(error);

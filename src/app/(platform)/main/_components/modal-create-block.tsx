@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
+} from "../../../_components/ui/dialog";
 
 export default function ModalComponent({
   children,
@@ -27,7 +27,7 @@ export default function ModalComponent({
   const { execute } = useAction(createBlock, {
     onSuccess: (data) => {
       toast.success("Блок создан");
-      route.push(`/main/create-block/${data.block_id}`);
+      route.push(`/main/block/${data.block_id}`);
     },
     onError: (error) => {
       console.log(error);

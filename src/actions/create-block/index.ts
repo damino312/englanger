@@ -6,6 +6,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { CreateBlock } from "./schema";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 // import { createAuditLog } from "@/lib/create-audit-log";
 // import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
@@ -24,6 +25,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         owner_id: Number(session.user.user_id),
       },
     });
+    revalidateTag("blocks");
     return { data: createdBlock };
   } catch (error) {
     console.error(error);

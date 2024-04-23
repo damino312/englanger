@@ -63,7 +63,7 @@ const SubblockContainer = ({ data }: { data: BlockData | null }) => {
   return (
     <div className="h-full mx-8">
       {isEditing ? (
-        <form action={onRenameBlock} className="" ref={formRef}>
+        <form action={onRenameBlock} ref={formRef}>
           <Input
             className="h-10 m-2 "
             name="name"
@@ -75,7 +75,7 @@ const SubblockContainer = ({ data }: { data: BlockData | null }) => {
       ) : (
         <h1
           onClick={enableRenaming}
-          className=" text-center font-semibold text-2xl mb-4"
+          className=" text-center font-semibold text-2xl mb-4 break-all"
         >
           Название блока: {data.name}
         </h1>
