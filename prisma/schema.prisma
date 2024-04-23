@@ -49,6 +49,7 @@ model Block {
   block_id          Int               @id @default(autoincrement())
   name              String
   owner_id          Int
+  is_saved          Boolean           @default(false)
   created_at        DateTime          @default(now())
   updated_at        DateTime          @updatedAt
   owner             User              @relation(fields: [owner_id], references: [user_id])

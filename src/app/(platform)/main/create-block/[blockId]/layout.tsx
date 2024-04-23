@@ -25,5 +25,5 @@ export default async function CreateBlockLayout({
     redirect("/main");
   }
 
-  return <div className="w-full min-h-screen bg-slate-100">{children}</div>;
+  return <div className="w-full bg-slate-100">{children}</div>;
 }

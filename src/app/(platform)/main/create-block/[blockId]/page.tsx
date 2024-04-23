@@ -9,6 +9,7 @@ import {
   SubblockTest,
 } from "@prisma/client";
 import SubblockContainer from "./_components/subblocks-container";
+import BlockSaveContainer from "./_components/block-save-container";
 
 export interface BlockData extends Block {
   subblock_orders: SubblockOrderData[];
@@ -28,9 +29,10 @@ export interface QuestionTestData extends QuestionTest {
 }
 
 const CreateBlockPage = async ({ params }: { params: { blockId: string } }) => {
+  const blockId = Number(params.blockId);
   const block = await db.block.findUnique({
     where: {
-      block_id: Number(params.blockId),
+      block_id: blockId,
     },
     include: {
       subblock_orders: {
@@ -56,6 +58,7 @@ const CreateBlockPage = async ({ params }: { params: { blockId: string } }) => {
     <div className="w-full h-full pb-10">
       <SubblockContainer data={block} />
       <CreateSubblockContainer subblocksLength={subblocksLength} />
+      <BlockSaveContainer blockId={blockId} />
     </div>
   );
 };
