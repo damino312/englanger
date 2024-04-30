@@ -34,6 +34,7 @@ model Group {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   users      User[]
+  assign_block_groups AssignBlockGroup[]
 }
 
 model Role {
@@ -55,6 +56,7 @@ model Block {
   owner             User              @relation(fields: [owner_id], references: [user_id])
   learning_outcomes LearningOutcome[]
   subblock_orders   SubblockOrder[]
+  assign_block_groups AssignBlockGroup[]
 }
 
 model SubblockOrder {
@@ -149,4 +151,18 @@ model LearningOutcome {
   finished_at         DateTime @default(now())
   block               Block    @relation(fields: [block_id], references: [block_id])
   user                User     @relation(fields: [user_id], references: [user_id])
+}
+
+model AssignBlockGroup {
+  assign_block_id Int      @id @default(autoincrement())
+  group_id        Int
+  block_id        Int
+  max_try_count   Int
+  time_limit      Int
+  deadline        DateTime
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  group           Group    @relation(fields: [group_id], references: [group_id])
+  block           Block    @relation(fields: [block_id], references: [block_id])
+
 }

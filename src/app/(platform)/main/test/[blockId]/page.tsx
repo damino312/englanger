@@ -31,9 +31,9 @@ const TestPage = async ({ params }: { params: { blockId: string } }) => {
   }
 
   return (
-    <>
+    <div className="w-full h-full px-32">
       <TestContainer block={block} />
-    </>
+    </div>
   );
 };
 

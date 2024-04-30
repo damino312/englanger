@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import CreateSubblockContainer from "./_components/create-subblock-container";
 import {
   AnswerTest,
+  AssignBlockGroup,
   Block,
   QuestionTest,
   SubblockDescription,
@@ -14,6 +15,7 @@ import { redirect } from "next/navigation";
 
 export interface BlockData extends Block {
   subblock_orders: SubblockOrderData[];
+  assign_block_groups: AssignBlockGroup[] | null;
 }
 
 export interface SubblockOrderData extends SubblockOrder {

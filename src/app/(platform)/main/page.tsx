@@ -54,8 +54,6 @@ const MainPage = async () => {
     return createdBlocks;
   }
 
-  console.log(studiedBlocks);
-
   return (
     <div className="w-full h-full">
       <div className="w-full h-full px-32 ">

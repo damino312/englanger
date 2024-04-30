@@ -1,5 +1,4 @@
 import { Block } from "@prisma/client";
-import { LastBlocksItem } from "./last-blocks-item";
 import BlockItem from "../teaching/_components/block-item";
 
 interface LastBlocksProps {
@@ -12,7 +11,11 @@ export const LastBlocks = ({ blocks }: LastBlocksProps) => {
       <div className="h-full grid grid-cols-4 gap-4 content-center justify-items-stretch px-8">
         {blocks &&
           blocks.map((block) => (
-            <BlockItem key={block.block_id} block={block} hideDelete={true} />
+            <BlockItem
+              key={block.block_id}
+              block={block}
+              hideExtraFields={true}
+            />
           ))}
       </div>
     </div>
