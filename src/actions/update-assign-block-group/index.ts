@@ -17,11 +17,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       error: "Необходима авторизация",
     };
   }
-  const { assign_block_id, deadline, max_try_count, time_limit } = data;
+  const { assign_block_group_id, deadline, max_try_count, time_limit } = data;
   try {
     const savedAssignBlockGroup = await db.assignBlockGroup.update({
       where: {
-        assign_block_id,
+        assign_block_group_id,
       },
       data: {
         deadline,

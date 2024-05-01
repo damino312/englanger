@@ -7,6 +7,7 @@ import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
 import { Label } from "@/app/_components/ui/label";
 import { useAction } from "@/hooks/use-action";
+import { cn } from "@/lib/utils";
 import { AssignBlockGroup, Group } from "@prisma/client";
 import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
@@ -52,7 +53,7 @@ const AssignPopover = ({ group, assignment, blockId }: AssignPopoverProps) => {
     const maxTryCount = Number(formData.get("try"));
     const assignBlockId = Number(formData.get("assignBlockId"));
     executeUpdateAssignBlockGroup({
-      assign_block_id: assignBlockId,
+      assign_block_group_id: assignBlockId,
       deadline,
       time_limit: timeLimit,
       max_try_count: maxTryCount,
@@ -67,17 +68,20 @@ const AssignPopover = ({ group, assignment, blockId }: AssignPopoverProps) => {
   return (
     <PopoverComponent
       side="right"
-      btnClassName="hover:bg-gray-200 px-2 rounded-md mb-1 font-semibold"
+      btnClassName={cn(
+        "px-2 rounded-md mb-1 font-semibold transition-colors",
+        assignment ? "bg-blue-200 hover:bg-blue-300" : "hover:bg-gray-200"
+      )}
       btnName={group.name}
     >
       <form action={assignment ? onUpdateAssign : onCreateAssign}>
         <div className="flex flex-col gap-2">
           <Label htmlFor="deadline">Деадлайн:</Label>
-          {assignment?.assign_block_id && (
+          {assignment?.assign_block_group_id && (
             <input
               type="hidden"
               name="assignBlockId"
-              value={assignment?.assign_block_id}
+              value={assignment?.assign_block_group_id}
             ></input>
           )}
           <input

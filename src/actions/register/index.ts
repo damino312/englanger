@@ -28,8 +28,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         login,
         name,
         email,
-        role_id: 1,
-        group_id: 1,
+        role_id: 1, // студент
         password: await hash(password, 10),
       },
     });

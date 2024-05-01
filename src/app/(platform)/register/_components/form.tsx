@@ -1,11 +1,12 @@
 "use client";
 
 import { ElementRef, useRef, useState } from "react";
-import { Button, Input } from "@nextui-org/react";
 import { registerUser } from "@/actions/register";
 import { useAction } from "@/hooks/use-action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { FormInput } from "@/app/_components/form/form-input";
+import { FormSubmit } from "@/app/_components/form/form-submit";
 
 export default function Form() {
   const router = useRouter();
@@ -40,37 +41,41 @@ export default function Form() {
       action={onSubmit}
       className="flex flex-col gap-2 mx-auto max-w-md mt-10"
     >
-      <Input
-        className="mb-4"
+      <FormInput
+        id="login"
+        className="h-10"
         name="login"
         type="text"
         label="Логин"
         placeholder="Введите логин"
       />
-      <Input
-        className="mb-4"
+      <FormInput
+        id="fio"
+        className="h-10"
         name="fio"
         type="text"
         label="ФИО"
         placeholder="Введите ФИО"
       />
-      <Input
-        className="mb-4"
+      <FormInput
+        id="email"
+        className="h-10"
         name="email"
         type="email"
         label="Email"
         placeholder="Введите email"
       />
-      <Input
-        className="mb-4"
+      <FormInput
+        id="password"
+        className="h-10"
         name="password"
         type="password"
         label="Пароль"
         placeholder="Введите пароль"
       />
-      <Button type="submit" color="success" isLoading={isLoading}>
+      <FormSubmit disabled={isLoading} className="w-full mt-3">
         <span className=" text-white font-semibold text-lg">Регистрация</span>
-      </Button>
+      </FormSubmit>
     </form>
   );
 }

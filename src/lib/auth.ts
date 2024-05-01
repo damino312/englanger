@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "./db";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { compare } from "bcrypt";
-import { JWT } from "next-auth/jwt";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
@@ -37,9 +36,11 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
         return {
-          user_id: user.user_id + "",
+          user_id: user.user_id,
           login: user.login,
-        };
+          role_id: user.role_id,
+          group_id: user.group_id,
+        } as any; // костыль, я не нашел как перезаписать defaultUser type
       },
     }),
   ],
@@ -49,6 +50,8 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.user_id = user.user_id; // Make sure it matches what you return in 'authorize'
         token.login = user.login;
+        token.role_id = user.role_id;
+        token.group_id = user.group_id;
       }
       return token;
     },
@@ -58,6 +61,8 @@ export const authOptions: NextAuthOptions = {
         ...session.user,
         user_id: token.user_id,
         login: token.login,
+        role_id: token.role_id,
+        group_id: token.group_id,
       };
       return session;
     },

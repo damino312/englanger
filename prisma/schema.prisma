@@ -8,24 +8,25 @@ datasource db {
 }
 
 model User {
-  user_id             Int               @id @default(autoincrement())
-  login               String            @unique
+  user_id             Int                @id @default(autoincrement())
+  login               String             @unique
   name                String
   picture             String?
-  email               String            @unique
+  email               String             @unique
   password            String
-  role_id             Int
-  group_id            Int
-  account_status      Boolean           @default(true)
+  role_id             Int?
+  group_id            Int?
+  account_status      Boolean            @default(true)
   last_studied_blocks String?
   last_taught_blocks  String?
   available_blocks    String?
-  created_at          DateTime          @default(now())
-  updated_at          DateTime          @updatedAt
+  created_at          DateTime           @default(now())
+  updated_at          DateTime           @updatedAt
+  group               Group?             @relation(fields: [group_id], references: [group_id])
+  role                Role?              @relation(fields: [role_id], references: [role_id])
   blocks              Block[]
   learning_outcomes   LearningOutcome[]
-  group               Group             @relation(fields: [group_id], references: [group_id])
-  role                Role              @relation(fields: [role_id], references: [role_id])
+  assign_block_users    AssignBlockUsers[]
 }
 
 model Group {
@@ -34,7 +35,7 @@ model Group {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   users      User[]
-  assign_block_groups AssignBlockGroup[]
+  AssignBlockGroups AssignBlockGroup[]
 }
 
 model Role {
@@ -47,13 +48,13 @@ model Role {
 }
 
 model Block {
-  block_id          Int               @id @default(autoincrement())
+  block_id          Int                @id @default(autoincrement())
   name              String
   owner_id          Int
-  is_saved          Boolean           @default(false)
-  created_at        DateTime          @default(now())
-  updated_at        DateTime          @updatedAt
-  owner             User              @relation(fields: [owner_id], references: [user_id])
+  is_saved          Boolean            @default(false)
+  created_at        DateTime           @default(now())
+  updated_at        DateTime           @updatedAt
+  owner             User               @relation(fields: [owner_id], references: [user_id])
   learning_outcomes LearningOutcome[]
   subblock_orders   SubblockOrder[]
   assign_block_groups AssignBlockGroup[]
@@ -83,8 +84,8 @@ model SubblockPronounce {
   value                 String
   created_at            DateTime        @default(now())
   updated_at            DateTime        @updatedAt
-  subblock_orders       SubblockOrder[]
   subblock_type         SubblockType    @relation(fields: [subblock_type_id], references: [subblock_type_id])
+  subblock_orders       SubblockOrder[]
 }
 
 model SubblockDescription {
@@ -113,9 +114,9 @@ model SubblockTest {
   subblock_type_id Int
   created_at       DateTime        @default(now())
   updated_at       DateTime        @updatedAt
+  subblock_type    SubblockType    @relation(fields: [subblock_type_id], references: [subblock_type_id])
   test_questions   QuestionTest[]
   subblock_orders  SubblockOrder[]
-  subblock_type    SubblockType    @relation(fields: [subblock_type_id], references: [subblock_type_id])
 }
 
 model QuestionTest {
@@ -128,8 +129,8 @@ model QuestionTest {
   picture          String?
   created_at       DateTime     @default(now())
   updated_at       DateTime     @updatedAt
-  answer_tests     AnswerTest[]
   subblock_test    SubblockTest @relation(fields: [subblock_test_id], references: [subblock_test_id], onDelete: Cascade)
+  answer_tests     AnswerTest[]
 }
 
 model AnswerTest {
@@ -153,16 +154,27 @@ model LearningOutcome {
   user                User     @relation(fields: [user_id], references: [user_id])
 }
 
-model AssignBlockGroup {
-  assign_block_id Int      @id @default(autoincrement())
-  group_id        Int
-  block_id        Int
-  max_try_count   Int
-  time_limit      Int
-  deadline        DateTime
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-  group           Group    @relation(fields: [group_id], references: [group_id])
-  block           Block    @relation(fields: [block_id], references: [block_id])
+model AssignBlockGroup{
+  assign_block_group_id Int      @id @default(autoincrement())
+  group_id              Int
+  block_id             Int
+  max_try_count        Int
+  time_limit           Int
+  deadline             DateTime
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
+  Block                Block    @relation(fields: [block_id], references: [block_id])
+  Group                Group    @relation(fields: [group_id], references: [group_id])
+  assign_block_users     AssignBlockUsers[]
+}
 
+model AssignBlockUsers {
+  assign_block_user_id     Int      @id @default(autoincrement())
+  assign_block_group_id    Int
+  user_id              Int
+  created_at           DateTime @default(now())
+  updated_at           DateTime
+  current_try_count    Int?     @default(0)
+  user                 User     @relation(fields: [user_id], references: [user_id])
+  AssignBlockGroup   AssignBlockGroup @relation(fields: [assign_block_group_id], references: [assign_block_group_id])
 }

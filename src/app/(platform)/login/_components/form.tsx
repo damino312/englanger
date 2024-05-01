@@ -1,13 +1,17 @@
 "use client";
 
 import { ElementRef, FormEvent, useRef } from "react";
-import { Button, Input } from "@nextui-org/react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { FormInput } from "@/app/_components/form/form-input";
+import { FormSubmit } from "@/app/_components/form/form-submit";
+import { useFormStatus } from "react-dom";
+import { toast } from "sonner";
 
 export default function Form() {
   const router = useRouter();
   const formRef = useRef<ElementRef<"form">>(null);
+  const { pending } = useFormStatus();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -19,6 +23,8 @@ export default function Form() {
     });
     if (!response?.error) {
       router.push("/");
+    } else {
+      toast.error("Ошибка входа");
     }
   };
   return (
@@ -27,23 +33,27 @@ export default function Form() {
       onSubmit={handleSubmit}
       className="flex flex-col gap-2 mx-auto max-w-md mt-10"
     >
-      <Input
-        className="mb-4"
+      <FormInput
+        disabled={pending}
+        id="login"
+        className="h-10"
         name="login"
         type="text"
         label="Логин"
         placeholder="Введите логин"
       />
-      <Input
-        className="mb-4"
+      <FormInput
+        disabled={pending}
+        id="password"
+        className="h-10"
         name="password"
         type="password"
         label="Пароль"
         placeholder="Введите пароль"
       />
-      <Button type="submit" color="success">
-        <span className=" text-white font-semibold text-lg">Войти</span>
-      </Button>
+      <FormSubmit disabled={pending}>
+        <span className="font-semibold text-lg">Войти</span>
+      </FormSubmit>
     </form>
   );
 }
