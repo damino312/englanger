@@ -14,6 +14,10 @@ const TeachingPage = async () => {
     redirect("/login");
   }
 
+  if (session?.user.role_id === 1) {
+    redirect("/main");
+  }
+
   const blocks: AssignBlockData[] = await db.block.findMany({
     where: { owner_id: Number(session?.user.user_id) },
     include: {
