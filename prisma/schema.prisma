@@ -174,7 +174,8 @@ model AssignBlockUsers {
   user_id              Int
   created_at           DateTime @default(now())
   updated_at           DateTime @updatedAt
-  current_try_count    Int?     @default(0)
+  current_try_count    Int      @default(0)
+  is_finished          Boolean? @default(false)
   user                 User     @relation(fields: [user_id], references: [user_id])
   AssignBlockGroup   AssignBlockGroup @relation(fields: [assign_block_group_id], references: [assign_block_group_id])
 }

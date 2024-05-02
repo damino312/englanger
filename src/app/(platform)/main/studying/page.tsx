@@ -1,9 +1,10 @@
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { AssignBlockGroup, AssignBlockUsers, Block } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import StudyingBlockContainer from "./_components/studying-block-container";
+import StudyingBlockContainer, {
+  ExtendedBlock,
+} from "./_components/studying-block-container";
 import { toast } from "sonner";
 
 const TeachingPage = async () => {
@@ -15,59 +16,49 @@ const TeachingPage = async () => {
   const groupId = Number(session?.user.group_id);
   const roleId = Number(session?.user.role_id);
 
-  let availableBlocks: Block[] = [];
+  // страница видна только ученикам
+  if (roleId !== 1) {
+    redirect("/main");
+  }
 
-  if (roleId === 1) {
-    try {
-      availableBlocks = await db.block.findMany({
-        where: {
-          assign_block_groups: {
-            some: {
-              group_id: groupId,
-            },
+  let availableBlocks: ExtendedBlock[] = [];
+
+  try {
+    availableBlocks = await db.block.findMany({
+      where: {
+        assign_block_groups: {
+          some: {
+            group_id: groupId,
           },
         },
-        include: {
-          assign_block_groups: {
-            where: {
-              group_id: groupId,
-            },
-            include: {
-              assign_block_users: {
-                where: {
-                  user_id: userId,
-                },
+      },
+      include: {
+        assign_block_groups: {
+          where: {
+            group_id: groupId,
+          },
+          include: {
+            assign_block_users: {
+              where: {
+                user_id: userId,
               },
             },
           },
         },
-      });
-    } catch (error) {
-      console.error(error);
-      toast.error(
-        "Произошла ошибка при получении блоков, повторите попытку позже"
-      );
-    }
-  } else if (roleId === 2) {
-    availableBlocks = await db.block.findMany({
-      where: {
-        owner_id: Number(session?.user.user_id),
+        learning_outcomes: true,
       },
     });
+  } catch (error) {
+    console.error(error);
+    toast.error(
+      "Произошла ошибка при получении блоков, повторите попытку позже"
+    );
   }
 
   return (
     <div className="w-full h-full px-32">
-      <>
-        {roleId === 1 ? (
-          <h1 className=" text-center font-bold text-3xl">Учебные блоки</h1>
-        ) : (
-          <h2 className=" text-center font-bold text-3xl">
-            Учебные блоки созданные мной
-          </h2>
-        )}
-      </>
-      <StudyingBlockContainer blocks={availableBlocks} />
+      <h1 className=" text-center font-bold text-3xl">Учебные блоки</h1>
+      <StudyingBlockContainer blocks={availableBlocks} roleId={roleId} />
     </div>
   );
 };

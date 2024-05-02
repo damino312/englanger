@@ -17,62 +17,73 @@ const StudyingBlockItem = ({ block }: StudyingBlockItemProps) => {
   const router = useRouter();
   const assignGroupInfo = block.assign_block_groups?.[0];
   const assignMyInfo = assignGroupInfo?.assign_block_users?.[0];
-  const isPermitted = checkPermission();
+  const isCountExceeded = checkTryCount();
+  const isDeadlinePassed = checkDeadline();
   const isTaking = isTakingTest();
 
   const { execute } = useAction(createAssignBlockUser, {
     onSuccess: () => {
       toast.success("Тест начат");
-      router.push('/main/test/' + block.block_id);
+      router.push("/main/test/" + block.block_id);
     },
     onError: (error) => {
       toast.error(error);
     },
   });
 
-  function checkPermission ()  {
-    if (assignMyInfo?.current_try_count === assignGroupInfo.max_try_count)
-      return false;
-    if (assignGroupInfo.deadline < new Date()) return false;
-    return true;
-  };
+  function checkTryCount() {
+    if (
+      (assignMyInfo?.current_try_count ?? 0) >= assignGroupInfo.max_try_count
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function checkDeadline() {
+    if (assignGroupInfo.deadline < new Date()) {
+      return true;
+    }
+    return false;
+  }
 
   function isTakingTest() {
     const deadlineTime = assignGroupInfo?.deadline.getTime();
     const createdTime = assignMyInfo?.created_at.getTime();
-    const timeLimitMillis = assignGroupInfo?.time_limit * 60 * 1000; 
+    const timeLimitMillis = assignGroupInfo?.time_limit * 60 * 1000;
+
+    if (!createdTime) return false;
 
     if (deadlineTime - createdTime > timeLimitMillis) {
-        return true;
+      return true;
     }
     return false;
-}
+  }
 
-  function onAction () {
-    if (!isPermitted) {
+  function onAction() {
+    if (isCountExceeded || isDeadlinePassed) {
       toast.error("Вам не разрешено начать тестирование");
       return null;
     }
     if (isTaking) {
-      router.push('/main/test/' + block.block_id);
+      router.push("/main/test/" + block.block_id);
       return null;
     }
     execute({
-      user_id: Number(session.data?.user.user_id), 
+      user_id: Number(session.data?.user.user_id),
       assign_block_group_id: assignGroupInfo?.assign_block_group_id,
     });
   }
 
-
   return (
     <form action={onAction}>
       <button
-        disabled={!isPermitted}
+        disabled={isCountExceeded || isDeadlinePassed}
         className={cn(
           "p-3 h-[140px] max-w-[260px] w-full   bg-slate-200 rounded-md transition-colors",
-          isPermitted
-            ? "cursor-pointer hover:bg-slate-300"
-            : "cursor-not-allowed"
+          isCountExceeded || isDeadlinePassed
+            ? "cursor-not-allowed"
+            : "cursor-pointer hover:bg-slate-300"
         )}
       >
         <div className=" text-left h-full flex justify-between flex-col">
@@ -85,10 +96,10 @@ const StudyingBlockItem = ({ block }: StudyingBlockItemProps) => {
               <span>
                 {" "}
                 {assignMyInfo?.current_try_count
-                  ? assignMyInfo.current_try_count
+                  ? assignMyInfo?.current_try_count
                   : 0}
               </span>
-              /<span>{assignGroupInfo.max_try_count}</span>
+              /<span>{assignGroupInfo?.max_try_count}</span>
             </span>
             {isTaking && <span>В процессе</span>}
           </div>

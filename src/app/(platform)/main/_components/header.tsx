@@ -7,7 +7,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const Header = () => {
+interface HeaderProps {
+  roleId: number;
+}
+
+const Header = ({ roleId }: HeaderProps) => {
   const params = usePathname();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -18,21 +22,33 @@ const Header = () => {
           <Link href="/main">
             <Image src="/logo.svg" alt="logo" width={25} height={25} />
           </Link>
+          {roleId !== 1 && (
+            <Link
+              href="/main/teaching"
+              className={params === "/main/teaching" ? " text-blue-700" : ""}
+            >
+              Я преподаю
+            </Link>
+          )}
+          {roleId === 1 && (
+            <Link
+              href="/main/studying"
+              className={params === "/main/studying" ? " text-blue-700" : ""}
+            >
+              Я учу
+            </Link>
+          )}
           <Link
-            href="/main/teaching"
-            className={params === "/main/teaching" ? " text-blue-700" : ""}
+            href="/main/my-results"
+            className={params === "/main/my-results" ? " text-blue-700" : ""}
           >
-            Я преподаю
+            Результаты
           </Link>
-          <Link
-            href="/main/studying"
-            className={params === "/main/studying" ? " text-blue-700" : ""}
-          >
-            Я учу
-          </Link>
-          <Button variant="outline" onClick={onOpen}>
-            Создать блок
-          </Button>
+          {roleId !== 1 && (
+            <Button variant="outline" onClick={onOpen}>
+              Создать блок
+            </Button>
+          )}
         </div>
         <Button>Настройки</Button>
       </div>

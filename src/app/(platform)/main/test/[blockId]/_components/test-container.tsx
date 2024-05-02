@@ -7,6 +7,7 @@ import { createLearningOutcome } from "@/actions/create-learning-outcome";
 import { Button } from "@/app/_components/ui/button";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface TestContainerProps {
   block: BlockData;
@@ -19,9 +20,13 @@ type Answer = {
 
 const TestContainer = ({ block }: TestContainerProps) => {
   const session = useSession();
+  const router = useRouter();
   const userId = Number(session.data?.user.user_id);
   const { execute } = useAction(createLearningOutcome, {
-    onSuccess: () => {},
+    onSuccess: () => {
+      toast.success("Тест завершен");
+      router.push("/main");
+    },
     onError: (error) => {
       toast.error(error);
     },

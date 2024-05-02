@@ -23,8 +23,9 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       data: {
         user_id: user_id,
         assign_block_group_id: assign_block_group_id,
+        is_finished: true,
       },
-    })
+    });
     revalidateTag("assign-block-users");
     return { data: createdAssignBlockUser };
   } catch (error) {
