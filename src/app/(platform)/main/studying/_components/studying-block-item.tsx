@@ -1,94 +1,70 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ExtendedBlock } from "./studying-block-container";
 import { useAction } from "@/hooks/use-action";
 import { createAssignBlockUser } from "@/actions/create-assign-block-user";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { AssignBlockGroup, AssignBlockUsers } from "@prisma/client";
 
 interface StudyingBlockItemProps {
-  block: ExtendedBlock;
+  blockId: number;
+  blockName: string;
+  isDeadlinePassed: boolean;
+  isCountExceeded: boolean;
+  assignGroupInfo: AssignBlockGroup;
+  assignMyInfo: AssignBlockUsers | undefined;
 }
 
-const StudyingBlockItem = ({ block }: StudyingBlockItemProps) => {
+const StudyingBlockItem = ({
+  blockId,
+  blockName,
+  isDeadlinePassed,
+  isCountExceeded,
+  assignGroupInfo,
+  assignMyInfo,
+}: StudyingBlockItemProps) => {
   const session = useSession();
   const router = useRouter();
-  const assignGroupInfo = block.assign_block_groups?.[0];
-  const assignMyInfo = assignGroupInfo?.assign_block_users?.[0];
-  const isCountExceeded = checkTryCount();
-  const isDeadlinePassed = checkDeadline();
-  const isTaking = isTakingTest();
 
   const { execute } = useAction(createAssignBlockUser, {
     onSuccess: () => {
       toast.success("Тест начат");
-      router.push("/main/test/" + block.block_id);
+      router.push("/main/test/" + blockId);
     },
     onError: (error) => {
       toast.error(error);
     },
   });
 
-  function checkTryCount() {
-    if (
-      (assignMyInfo?.current_try_count ?? 0) >= assignGroupInfo.max_try_count
-    ) {
-      return true;
-    }
-    return false;
-  }
-
-  function checkDeadline() {
-    if (assignGroupInfo.deadline < new Date()) {
-      return true;
-    }
-    return false;
-  }
-
-  function isTakingTest() {
-    const deadlineTime = assignGroupInfo?.deadline.getTime();
-    const createdTime = assignMyInfo?.created_at.getTime();
-    const timeLimitMillis = assignGroupInfo?.time_limit * 60 * 1000;
-
-    if (!createdTime) return false;
-
-    if (deadlineTime - createdTime > timeLimitMillis) {
-      return true;
-    }
-    return false;
-  }
-
   function onAction() {
     if (isCountExceeded || isDeadlinePassed) {
       toast.error("Вам не разрешено начать тестирование");
       return null;
     }
-    if (isTaking) {
-      router.push("/main/test/" + block.block_id);
-      return null;
-    }
+
     execute({
       user_id: Number(session.data?.user.user_id),
       assign_block_group_id: assignGroupInfo?.assign_block_group_id,
     });
   }
-
+  console.log(assignMyInfo?.is_finished);
   return (
     <form action={onAction}>
       <button
+        title={blockName}
         disabled={isCountExceeded || isDeadlinePassed}
         className={cn(
-          "p-3 h-[140px] max-w-[260px] w-full   bg-slate-200 rounded-md transition-colors",
+          "p-3 h-[140px] w-full bg-slate-200 rounded-md transition-colors",
           isCountExceeded || isDeadlinePassed
             ? "cursor-not-allowed"
             : "cursor-pointer hover:bg-slate-300"
         )}
       >
         <div className=" text-left h-full flex justify-between flex-col">
-          <span className="text-ellipsis" title={block.name}>
-            {block.name}
+          <span className="text-ellipsis" title={blockName}>
+            {blockName}
           </span>
           <div>
             <span>
@@ -101,7 +77,9 @@ const StudyingBlockItem = ({ block }: StudyingBlockItemProps) => {
               </span>
               /<span>{assignGroupInfo?.max_try_count}</span>
             </span>
-            {isTaking && <span>В процессе</span>}
+            {assignMyInfo?.is_finished && !assignMyInfo?.is_finished && (
+              <span>В процессе</span>
+            )}
           </div>
         </div>
       </button>

@@ -139,7 +139,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       //   rightAnswersCount: rightAnswersCount,
       // });
     } else {
-      new Error("Блок не найден");
+      throw new Error("Блок не найден");
     }
   } catch (error) {
     console.error(error);

@@ -4,7 +4,7 @@ import {
   Block,
   LearningOutcome,
 } from "@prisma/client";
-import StudyingBlockItem from "./studying-block-item";
+import StudyingHoverCard from "./studying-hover-card";
 
 interface StudyingBlockContainerProps {
   blocks: ExtendedBlock[];
@@ -27,9 +27,9 @@ const StudyingBlockContainer = ({
   return (
     <>
       {roleId === 1 && (
-        <div className="flex">
+        <div className="flex w-full">
           {blocks.map((block) => (
-            <StudyingBlockItem key={block.block_id} block={block} />
+            <StudyingHoverCard block={block} key={block.block_id} />
           ))}
         </div>
       )}

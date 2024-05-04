@@ -45,7 +45,14 @@ const TeachingPage = async () => {
             },
           },
         },
-        learning_outcomes: true,
+        learning_outcomes: {
+          where: {
+            user_id: userId,
+          },
+          orderBy: {
+            learning_outcome_id: "desc",
+          },
+        },
       },
     });
   } catch (error) {
