@@ -53,7 +53,7 @@ const StudyingBlockItem = ({
     });
   }
   return (
-    <form action={onAction} className="h-full">
+    <form action={onAction} className="h-full text-lg">
       <button
         title={blockName}
         disabled={isCountExceeded || isDeadlinePassed}

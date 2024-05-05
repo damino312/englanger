@@ -8,6 +8,7 @@ const MainPage = async () => {
 
   const userId = Number(session?.user.user_id);
   const groupId = Number(session?.user.group_id);
+  const roleId = Number(session?.user.role_id);
 
   const user = await db.user.findUnique({
     where: {
@@ -19,8 +20,17 @@ const MainPage = async () => {
     },
   });
 
-  const createdBlocks = await getLastTaughtBlocks();
-  const studiedBlocks = await getLastStudiedBlocks();
+  let studiedBlocks: Block[] = [];
+
+  if (roleId === 1) {
+    studiedBlocks = await getLastStudiedBlocks();
+  }
+
+  let createdBlocks: Block[] = [];
+
+  if (roleId === 2) {
+    createdBlocks = await getLastTaughtBlocks();
+  }
 
   async function getLastTaughtBlocks() {
     let createdBlocks: Block[] = [];
@@ -81,7 +91,7 @@ const MainPage = async () => {
   return (
     <div className="w-full h-full">
       <div className="w-full h-full px-32 ">
-        {studiedBlocks.length > 0 && (
+        {roleId === 1 && studiedBlocks.length > 0 && (
           <>
             <h2 className="text-3xl font-semibold mb-4">
               Что последнее я проходил:
@@ -90,7 +100,7 @@ const MainPage = async () => {
           </>
         )}
 
-        {createdBlocks.length > 0 && (
+        {roleId === 2 && createdBlocks.length > 0 && (
           <>
             <h2 className="text-3xl font-semibold my-4">
               Что последнее я создавал:

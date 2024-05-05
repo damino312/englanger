@@ -2,6 +2,7 @@
 import ModalComponent from "@/app/(platform)/main/_components/modal-create-block";
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
+import { cn } from "@/lib/utils";
 import { useDisclosure } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,25 +23,31 @@ const Header = ({ roleId }: HeaderProps) => {
           <Link href="/main">
             <Image src="/logo.svg" alt="logo" width={25} height={25} />
           </Link>
-          {roleId !== 1 && (
-            <Link
-              href="/main/teaching"
-              className={params === "/main/teaching" ? " text-blue-700" : ""}
-            >
-              Я преподаю
-            </Link>
-          )}
-          {roleId === 1 && (
-            <Link
-              href="/main/studying"
-              className={params === "/main/studying" ? " text-blue-700" : ""}
-            >
-              Я учу
-            </Link>
-          )}
           <Link
-            href="/main/my-results"
-            className={params === "/main/my-results" ? " text-blue-700" : ""}
+            href={cn(
+              roleId === 1 && "/main/studying",
+              roleId === 2 && "/main/teaching"
+            )}
+            className={cn(
+              params === "/main/teaching" || params === "/main/studying"
+                ? " text-blue-700"
+                : ""
+            )}
+          >
+            {roleId === 1 && "Прохождение блоков"}
+            {roleId === 2 && "Созданные блоки"}
+          </Link>
+
+          <Link
+            href={cn(
+              roleId === 1 && "/main/my-results",
+              roleId === 2 && "/main/results"
+            )}
+            className={cn(
+              params === "/main/my-results" || params === "/main/results"
+                ? " text-blue-700"
+                : ""
+            )}
           >
             Результаты
           </Link>

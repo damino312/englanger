@@ -17,7 +17,7 @@ interface ProcessedGrade {
   }[];
 }
 
-const ResultPage = async () => {
+const MyResultsPage = async () => {
   const session = await getServerSession(authOptions);
   const userId = Number(session?.user.user_id);
   const roleId = Number(session?.user.role_id);
@@ -137,4 +137,4 @@ const ResultPage = async () => {
   );
 };
 
-export default ResultPage;
+export default MyResultsPage;

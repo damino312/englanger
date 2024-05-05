@@ -64,7 +64,7 @@ const TeachingPage = async () => {
 
   return (
     <div className="w-full h-full px-32">
-      <h1 className=" text-center font-bold text-3xl">Учебные блоки</h1>
+      <h1 className=" text-center font-bold text-3xl mb-3">Учебные блоки</h1>
       <StudyingBlockContainer blocks={availableBlocks} roleId={roleId} />
     </div>
   );
