@@ -19,59 +19,48 @@ export default async function TestLayout({
   if (!userId) {
     redirect("/login");
   }
+  try {
+    await updateLastBlocksOfUser(blockId, userId);
+  } catch (error) {
+    console.log("Не сохранился последний изученный блок", error);
+  }
 
-  // const currentBlock = await getCurrentBlock(blockId);
+  async function updateLastBlocksOfUser(blockId: number, userId: number) {
+    const user = await db.user.findUnique({
+      where: {
+        user_id: userId,
+      },
+      select: {
+        last_taught_blocks: true,
+      },
+    });
+    let newLastTeachingBlocks: string | null = null;
 
-  // if (userId !== currentBlock?.owner_id) {
-  //   redirect("/main");
-  // }
+    if (!user?.last_taught_blocks) {
+      newLastTeachingBlocks = params.blockId;
+    } else {
+      const arrayOfBlocks = user.last_taught_blocks.split("|");
+      if (!arrayOfBlocks.includes(String(blockId))) {
+        let newArrayOfBlocks: string[] = [];
+        if (arrayOfBlocks.length >= 3) {
+          arrayOfBlocks.shift();
+        }
+        newArrayOfBlocks = [...arrayOfBlocks, ...[String(blockId)]];
+        newLastTeachingBlocks = newArrayOfBlocks.join("|");
+      }
+    }
 
-  // await updateLastBlocksOfUser(blockId, userId);
-
-  // async function getCurrentBlock(blockId: number) {
-  //   const currentBlock = await db.block.findFirst({
-  //     where: { block_id: blockId },
-  //   });
-  //   return currentBlock;
-  // }
-
-  // async function updateLastBlocksOfUser(blockId: number, userId: number) {
-  //   const user = await db.user.findUnique({
-  //     where: {
-  //       user_id: userId,
-  //     },
-  //     select: {
-  //       last_taught_blocks: true,
-  //     },
-  //   });
-  //   let newLastTeachingBlocks: string | null = null;
-
-  //   if (!user?.last_taught_blocks) {
-  //     newLastTeachingBlocks = params.blockId;
-  //   } else {
-  //     const arrayOfBlocks = user.last_taught_blocks.split("|");
-  //     if (!arrayOfBlocks.includes(String(blockId))) {
-  //       let newArrayOfBlocks: string[] = [];
-  //       if (arrayOfBlocks.length >= 3) {
-  //         arrayOfBlocks.shift();
-  //       }
-  //       newArrayOfBlocks = [...arrayOfBlocks, ...[String(blockId)]];
-  //       newLastTeachingBlocks = newArrayOfBlocks.join("|");
-  //     }
-  //   }
-  //   console.log(newLastTeachingBlocks);
-
-  //   if (newLastTeachingBlocks) {
-  //     const updatedUser = await db.user.update({
-  //       where: {
-  //         user_id: userId,
-  //       },
-  //       data: {
-  //         last_taught_blocks: newLastTeachingBlocks,
-  //       },
-  //     });
-  //   }
-  // }
+    if (newLastTeachingBlocks) {
+      const updatedUser = await db.user.update({
+        where: {
+          user_id: userId,
+        },
+        data: {
+          last_studied_blocks: newLastTeachingBlocks,
+        },
+      });
+    }
+  }
 
   return <div className="w-full min-h-screen bg-slate-100">{children}</div>;
 }

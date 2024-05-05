@@ -1,6 +1,5 @@
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Block } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
@@ -60,7 +59,6 @@ export default async function CreateBlockLayout({
         newLastTeachingBlocks = newArrayOfBlocks.join("|");
       }
     }
-    console.log(newLastTeachingBlocks);
 
     if (newLastTeachingBlocks) {
       const updatedUser = await db.user.update({

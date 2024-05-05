@@ -31,7 +31,7 @@ const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
     <>
       <HoverCardDemo
         isContentHidden={!isCountExceeded && !isDeadlinePassed && !lastResult}
-        triggerClassName="w-full max-w-[260px]"
+        triggerClassName="w-full max-w-[420px] "
         trigger={
           <StudyingBlockItem
             blockId={block.block_id}
@@ -45,7 +45,7 @@ const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
       >
         <div>
           {isCountExceeded && (
-            <p className="text-red-600">Количество попыток превышено</p>
+            <p className="text-red-600">Попытки закончились</p>
           )}
           {isDeadlinePassed && <p className="text-red-600">Деадлайн прошел</p>}
           {lastResult && <p>Последний результат, % : {lastResult.grade}</p>}

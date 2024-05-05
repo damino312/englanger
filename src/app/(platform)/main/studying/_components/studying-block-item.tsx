@@ -30,7 +30,6 @@ const StudyingBlockItem = ({
 
   const { execute } = useAction(createAssignBlockUser, {
     onSuccess: () => {
-      toast.success("Тест начат");
       router.push("/main/test/" + blockId);
     },
     onError: (error) => {
@@ -44,19 +43,22 @@ const StudyingBlockItem = ({
       return null;
     }
 
+    if (assignMyInfo) {
+      router.push("/main/test/" + blockId);
+      return null;
+    }
     execute({
       user_id: Number(session.data?.user.user_id),
       assign_block_group_id: assignGroupInfo?.assign_block_group_id,
     });
   }
-  console.log(assignMyInfo?.is_finished);
   return (
-    <form action={onAction}>
+    <form action={onAction} className="h-full">
       <button
         title={blockName}
         disabled={isCountExceeded || isDeadlinePassed}
         className={cn(
-          "p-3 h-[140px] w-full bg-slate-200 rounded-md transition-colors",
+          "p-3 min-h-[120px] h-full  w-full bg-slate-400 rounded-md transition-colors",
           isCountExceeded || isDeadlinePassed
             ? "cursor-not-allowed"
             : "cursor-pointer hover:bg-slate-300"

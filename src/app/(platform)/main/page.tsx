@@ -7,6 +7,7 @@ const MainPage = async () => {
   const session = await getServerSession(authOptions);
 
   const userId = Number(session?.user.user_id);
+  const groupId = Number(session?.user.group_id);
 
   if (!userId) {
     return;
@@ -40,20 +41,47 @@ const MainPage = async () => {
     return createdBlocks;
   }
   async function getLastStudiedBlocks() {
-    let createdBlocks: Block[] = [];
+    let studiedBlocks: Block[] = [];
     if (user?.last_studied_blocks) {
       const arrayOfBlocks = user.last_studied_blocks.split("|").map(Number);
-      createdBlocks = await db.block.findMany({
+
+      studiedBlocks = await db.block.findMany({
         where: {
           block_id: {
             in: arrayOfBlocks,
           },
+          assign_block_groups: {
+            some: {
+              group_id: groupId,
+            },
+          },
+        },
+        include: {
+          assign_block_groups: {
+            where: {
+              group_id: groupId,
+            },
+            include: {
+              assign_block_users: {
+                where: {
+                  user_id: userId,
+                },
+              },
+            },
+          },
+          learning_outcomes: {
+            where: {
+              user_id: userId,
+            },
+            orderBy: {
+              learning_outcome_id: "desc",
+            },
+          },
         },
       });
     }
-    return createdBlocks;
+    return studiedBlocks;
   }
-
   return (
     <div className="w-full h-full">
       <div className="w-full h-full px-32 ">
@@ -62,7 +90,7 @@ const MainPage = async () => {
             <h2 className="text-3xl font-semibold mb-4">
               Что последнее я проходил:
             </h2>
-            <LastBlocks />
+            <LastBlocks blocks={studiedBlocks} type="study" />
           </>
         )}
 
@@ -71,7 +99,7 @@ const MainPage = async () => {
             <h2 className="text-3xl font-semibold my-4">
               Что последнее я создавал:
             </h2>
-            <LastBlocks blocks={createdBlocks} />
+            <LastBlocks blocks={createdBlocks} type="teach" />
           </>
         )}
       </div>

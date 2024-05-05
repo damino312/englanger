@@ -27,7 +27,7 @@ const StudyingBlockContainer = ({
   return (
     <>
       {roleId === 1 && (
-        <div className="flex w-full">
+        <div className="flex w-full h-full">
           {blocks.map((block) => (
             <StudyingHoverCard block={block} key={block.block_id} />
           ))}
