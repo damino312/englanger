@@ -9,10 +9,6 @@ const MainPage = async () => {
   const userId = Number(session?.user.user_id);
   const groupId = Number(session?.user.group_id);
 
-  if (!userId) {
-    return;
-  }
-
   const user = await db.user.findUnique({
     where: {
       user_id: userId,

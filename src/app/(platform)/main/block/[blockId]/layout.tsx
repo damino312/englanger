@@ -16,10 +16,6 @@ export default async function CreateBlockLayout({
   const userId = Number(session?.user.user_id);
   const blockId = Number(params.blockId);
 
-  if (!userId) {
-    redirect("/login");
-  }
-
   const currentBlock = await getCurrentBlock(blockId);
 
   if (userId !== currentBlock?.owner_id) {
