@@ -9,7 +9,7 @@ interface ResultsItemProps {
 
 const ResultsItem = ({ result }: ResultsItemProps) => {
   return (
-    <div>
+    <div className="mb-4">
       <div className="flex gap-3 items-end ">
         <h2 className="font-bold text-2xl">{result.block_name}</h2>
         <Separator orientation="vertical" className="h-6 bg-black w-[0.5px]" />
@@ -24,11 +24,10 @@ const ResultsItem = ({ result }: ResultsItemProps) => {
         </p>
       </div>
       <>
-        {result.users
+        {result.groups
           .sort((a, b) => {
-            const nameA = a.user_name.toUpperCase();
-            const nameB = b.user_name.toUpperCase();
-
+            const nameA = a.group_name.toUpperCase();
+            const nameB = b.group_name.toUpperCase();
             if (nameA < nameB) {
               return -1;
             }
@@ -37,8 +36,15 @@ const ResultsItem = ({ result }: ResultsItemProps) => {
             }
             return 0;
           })
-          .map((user, index) => (
-            <UserItem key={user.user_id} user={user} index={index} />
+          .map((group) => (
+            <div key={group.group_id} className="ml-6 ">
+              <span className="font-semibold text-xl">{group.group_name}</span>
+              <>
+                {group.users.map((user, index) => (
+                  <UserItem index={index} key={user.user_id} user={user} />
+                ))}
+              </>
+            </div>
           ))}
       </>
     </div>

@@ -14,9 +14,10 @@ const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
   const isCountExceeded = checkTryCount();
   const isDeadlinePassed = checkDeadline();
 
-  const bestResult = block.learning_outcomes?.reduce((prev, curr) =>
-    prev?.grade > curr?.grade ? prev : curr
-  );
+  // const bestResult = block?.learning_outcomes?.reduce(
+  //   (prev, curr) => (prev?.grade > curr?.grade ? prev : curr),
+  //   []
+  // );
 
   function checkTryCount() {
     if (
@@ -36,7 +37,6 @@ const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
   return (
     <>
       <HoverCardDemo
-        isContentHidden={!isCountExceeded && !isDeadlinePassed && !lastResult}
         triggerClassName="w-full max-w-[420px] "
         trigger={
           <StudyingBlockItem
@@ -60,7 +60,7 @@ const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
               timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             })}
           </p>
-          {bestResult && <p>Лучший результат, % : {bestResult.grade}</p>}
+          {/* {bestResult && <p>Лучший результат, % : {bestResult.grade}</p>} */}
         </div>
       </HoverCardDemo>
     </>

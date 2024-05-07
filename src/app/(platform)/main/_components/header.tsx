@@ -7,6 +7,12 @@ import { useDisclosure } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import SettingsBtn from "./settings-btn";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/app/_components/ui/avatar";
 
 interface HeaderProps {
   roleId: number;
@@ -57,7 +63,13 @@ const Header = ({ roleId }: HeaderProps) => {
             </Button>
           )}
         </div>
-        <Button>Настройки</Button>
+        <div className="flex gap-4">
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          <SettingsBtn />
+        </div>
       </div>
       <ModalComponent
         title="Создание блока"

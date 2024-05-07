@@ -9,12 +9,27 @@ type UsersResult = {
   finished_at: Date;
 };
 
-export interface User {
+export interface ResultsUser {
   user_id: number;
   user_name: string;
   current_try_count: number;
   assign_block_group_id: number;
   results: UsersResult[];
+}
+
+interface ResultsGroup {
+  group_id: number;
+  group_name: string;
+  users: ResultsUser[];
+}
+
+export interface ProcessedResult {
+  block_id: number;
+  block_name: string;
+  max_try_count: number;
+  deadline: Date;
+  time_limit: number;
+  groups: ResultsGroup[];
 }
 
 interface Result {
@@ -30,15 +45,7 @@ interface Result {
   grade: number;
   finished_at: Date;
   assign_block_group_id: number;
-}
-
-export interface ProcessedResult {
-  block_id: number;
-  block_name: string;
-  max_try_count: number;
-  deadline: Date;
-  time_limit: number;
-  users: User[];
+  group_name: string;
 }
 
 const ResultsPage = async () => {
@@ -56,6 +63,7 @@ const ResultsPage = async () => {
 	u.user_id,
 	u.name,
 	u.group_id,
+	u.group_name,
 	abu.current_try_count,
 	abg.deadline,
 	abg.time_limit,
@@ -72,6 +80,7 @@ join (
 	select
 		u.user_id,
 		g.group_id,
+		g.name as group_name,
 		u.name
 	from
 		"Group" g
@@ -110,6 +119,12 @@ where b.owner_id = ${userId}`;
       ],
     };
 
+    const group = {
+      group_id: result.group_id,
+      group_name: result.group_name,
+      users: [user],
+    };
+
     if (!ifBlockExists) {
       processedResults.push({
         block_id: result.block_id,
@@ -117,24 +132,33 @@ where b.owner_id = ${userId}`;
         max_try_count: result.max_try_count,
         deadline: result.deadline,
         time_limit: result.time_limit,
-        users: [user],
+        groups: [group],
       });
     } else {
       const resultsIndex = processedResults.findIndex(
         (item) => item.block_id === result.block_id
       );
       if (resultsIndex !== -1) {
-        const users: User[] = processedResults[resultsIndex].users;
-        const usersIndex = users.findIndex(
-          (item) => item.user_id === result.user_id
+        const groups: ResultsGroup[] = processedResults[resultsIndex].groups;
+        const groupIndex = groups.findIndex(
+          (item) => item.group_id === result.group_id
         );
-        if (usersIndex !== -1) {
-          users[usersIndex].results.push({
-            grade: result.grade,
-            finished_at: result.finished_at,
-          });
+
+        if (groupIndex !== -1) {
+          const users = groups[groupIndex].users;
+          const usersIndex = users.findIndex(
+            (item) => item.user_id === result.user_id
+          );
+          if (usersIndex !== -1) {
+            users[usersIndex].results.push({
+              grade: result.grade,
+              finished_at: result.finished_at,
+            });
+          } else {
+            users.push(user);
+          }
         } else {
-          users.push(user);
+          groups.push(group);
         }
       } else {
         throw new Error("Почему то не нашел индекс processedResults");

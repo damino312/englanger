@@ -82,9 +82,9 @@ const MyResultsPage = async () => {
   });
 
   return (
-    <div>
+    <>
       <h2 className=" text-center font-bold text-3xl">Мои результаты</h2>
-      <div className="px-32 w-full  flex  ">
+      <div className="px-32 w-full flex flex-col  ">
         {processedGrades &&
           processedGrades.map((grade, index) => (
             <div key={grade.block_id} className="mb-2">
@@ -133,7 +133,7 @@ const MyResultsPage = async () => {
             </div>
           ))}
       </div>
-    </div>
+    </>
   );
 };
 

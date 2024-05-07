@@ -1,7 +1,7 @@
-import { User } from "../page";
+import { ResultsUser } from "../page";
 
 interface UserProps {
-  user: User;
+  user: ResultsUser;
   index: number;
 }
 const UserItem = ({ user, index }: UserProps) => {
@@ -9,7 +9,7 @@ const UserItem = ({ user, index }: UserProps) => {
     prev?.grade > curr?.grade ? prev : curr
   );
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 ml-6">
       <p className="font-semibold">
         {index + 1}. {user.user_name},
       </p>
