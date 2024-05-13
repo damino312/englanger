@@ -94,7 +94,7 @@ const MainPage = async () => {
         {roleId === 1 && studiedBlocks.length > 0 && (
           <>
             <h2 className="text-3xl font-semibold mb-4">
-              Что последнее я проходил:
+              Последние пройденные блоки:
             </h2>
             <LastBlocks blocks={studiedBlocks} type="study" />
           </>
@@ -103,7 +103,7 @@ const MainPage = async () => {
         {roleId === 2 && createdBlocks.length > 0 && (
           <>
             <h2 className="text-3xl font-semibold my-4">
-              Что последнее я создавал:
+              Последние редактируемые блоки:
             </h2>
             <LastBlocks blocks={createdBlocks} type="teach" />
           </>
