@@ -68,7 +68,7 @@ const CreateBlockPage = async ({ params }: { params: { blockId: string } }) => {
 
   return (
     <div className="w-full h-full pb-10">
-      {/* <SubblockContainer data={block as any} /> */}
+      <SubblockContainer data={block as any} />
       <CreateSubblockContainer subblocksLength={subblocksLength} />
       <BlockSaveContainer blockId={blockId} subblockCount={subblockCount} />
     </div>
