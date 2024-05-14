@@ -7,6 +7,7 @@ import {
   QuestionTest,
   SubblockDescription,
   SubblockOrder,
+  SubblockPronounce,
   SubblockTest,
 } from "@prisma/client";
 import SubblockContainer from "./_components/subblocks-container";
@@ -21,6 +22,7 @@ export interface BlockData extends Block {
 export interface SubblockOrderData extends SubblockOrder {
   subblock_test: SubblockTestData | null;
   subblock_description: SubblockDescription | null;
+  subblock_pronounce: SubblockPronounce | null;
 }
 
 export interface SubblockTestData extends SubblockTest {
@@ -50,6 +52,7 @@ const CreateBlockPage = async ({ params }: { params: { blockId: string } }) => {
             },
           },
           subblock_description: true,
+          subblock_pronounce: true,
         },
       },
     },
@@ -65,7 +68,7 @@ const CreateBlockPage = async ({ params }: { params: { blockId: string } }) => {
 
   return (
     <div className="w-full h-full pb-10">
-      <SubblockContainer data={block} />
+      {/* <SubblockContainer data={block as any} /> */}
       <CreateSubblockContainer subblocksLength={subblocksLength} />
       <BlockSaveContainer blockId={blockId} subblockCount={subblockCount} />
     </div>

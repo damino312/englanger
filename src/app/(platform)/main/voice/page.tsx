@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/app/_components/ui/button";
-import axios from "axios";
 import { useEffect, useRef } from "react";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 const VoicePage = () => {
@@ -12,7 +11,7 @@ const VoicePage = () => {
     console.log(recorderControls.recordingBlob);
     // recordingBlob will be present at this point after 'stopRecording' has been called
   }, [recorderControls.recordingBlob]);
-  const addAudioElement = (blob) => {
+  const addAudioElement = (blob: Blob) => {
     const url = URL.createObjectURL(blob);
     const audio = document.createElement("audio");
     audio.src = url;
@@ -21,24 +20,19 @@ const VoicePage = () => {
   };
 
   const handleSending = async () => {
-    // if (!recorderControls.recordingBlob) {
-    //   console.log("no blob");
-    //   return;
-    // }
+    if (!recorderControls.recordingBlob) {
+      console.log("no blob");
+      return;
+    }
 
-    // const formData = new FormData();
-    // formData.append("audio", recorderControls.recordingBlob, "audio.mp3");
+    const formData = new FormData();
+    formData.append("audio", recorderControls.recordingBlob, "recording.wav");
 
-    const data = await fetch("http://localhost:3000/api/pr", {
+    const response = await fetch("http://localhost:3000/api/pr", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        audio: "recorderControls.recordingBlob",
-      }),
+      body: formData,
     });
-    console.log(await data.json());
+    console.log(await response.json());
   };
 
   return (
