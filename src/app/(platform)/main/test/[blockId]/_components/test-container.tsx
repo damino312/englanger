@@ -8,6 +8,7 @@ import { Button } from "@/app/_components/ui/button";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import SubblockPronounce from "./subblock-pronounce";
 
 interface TestContainerProps {
   block: BlockData;
@@ -53,6 +54,14 @@ const TestContainer = ({ block }: TestContainerProps) => {
             return (
               <SubblockTest
                 key={subblock.subblock_test_id}
+                subblock={subblock}
+              />
+            );
+          }
+          if (subblock.subblock_pronounce_id) {
+            return (
+              <SubblockPronounce
+                key={subblock.subblock_pronounce_id}
                 subblock={subblock}
               />
             );
