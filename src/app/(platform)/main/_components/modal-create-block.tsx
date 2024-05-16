@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
+} from "../../../_components/ui/dialog";
 
 export default function ModalComponent({
   children,
@@ -27,7 +27,7 @@ export default function ModalComponent({
   const { execute } = useAction(createBlock, {
     onSuccess: (data) => {
       toast.success("Блок создан");
-      route.push(`/main/create-block/${data.block_id}`);
+      route.push(`/main/block/${data.block_id}`);
     },
     onError: (error) => {
       console.log(error);
@@ -47,9 +47,7 @@ export default function ModalComponent({
           <DialogTitle className="flex flex-col gap-1 text-black text-3xl">
             {title}
           </DialogTitle>
-          <DialogDescription>
-            <form action={onSubmit}>{children}</form>
-          </DialogDescription>
+          <form action={onSubmit}>{children}</form>
         </DialogHeader>
       </DialogContent>
     </Dialog>

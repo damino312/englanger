@@ -1,10 +1,9 @@
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Block } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-export default async function CreateBlockLayout({
+export default async function TestLayout({
   children,
   params,
 }: {
@@ -20,20 +19,10 @@ export default async function CreateBlockLayout({
   if (!userId) {
     redirect("/login");
   }
-
-  const currentBlock = await getCurrentBlock(blockId);
-
-  if (userId !== currentBlock?.owner_id) {
-    redirect("/main");
-  }
-
-  await updateLastBlocksOfUser(blockId, userId);
-
-  async function getCurrentBlock(blockId: number) {
-    const currentBlock = await db.block.findFirst({
-      where: { block_id: blockId },
-    });
-    return currentBlock;
+  try {
+    await updateLastBlocksOfUser(blockId, userId);
+  } catch (error) {
+    console.log("Не сохранился последний изученный блок", error);
   }
 
   async function updateLastBlocksOfUser(blockId: number, userId: number) {
@@ -60,7 +49,6 @@ export default async function CreateBlockLayout({
         newLastTeachingBlocks = newArrayOfBlocks.join("|");
       }
     }
-    console.log(newLastTeachingBlocks);
 
     if (newLastTeachingBlocks) {
       const updatedUser = await db.user.update({
@@ -68,7 +56,7 @@ export default async function CreateBlockLayout({
           user_id: userId,
         },
         data: {
-          last_taught_blocks: newLastTeachingBlocks,
+          last_studied_blocks: newLastTeachingBlocks,
         },
       });
     }

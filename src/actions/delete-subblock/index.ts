@@ -6,9 +6,6 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { DeleteSubblock } from "./schema";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { error } from "console";
-// import { createAuditLog } from "@/lib/create-audit-log";
-// import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const session = await getServerSession(authOptions);
@@ -18,29 +15,33 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     };
   }
   const { subblock_id, type } = data;
-  let obj: any;
-  if (type === 1) obj = { subblock_test_id: subblock_id };
-  if (type === 2) obj = { subblock_description_id: subblock_id };
-  // if (type === 3) obj = {subblock_test_id: subblock_id}
+
   try {
-    if (obj) {
-      console.log(obj);
-      const foundOrder = await db.subblockOrder.findFirst({
+    let foundOrder;
+
+    if (type === 1) {
+      foundOrder = await db.subblockOrder.findFirst({
         where: {
           subblock_test_id: subblock_id,
         },
       });
-      let deletedOrder;
-      if (foundOrder) {
-        deletedOrder = await db.subblockOrder.delete({
-          where: foundOrder,
-        });
-      } else {
-        throw new Error("foundOrder пустой");
-      }
+    } else if (type === 2) {
+      foundOrder = await db.subblockOrder.findFirst({
+        where: {
+          subblock_pronounce_id: subblock_id,
+        },
+      });
+    } else {
+      throw new Error("Неверный тип подблока");
+    }
+
+    if (foundOrder) {
+      const deletedOrder = await db.subblockOrder.delete({
+        where: foundOrder,
+      });
       return { data: deletedOrder };
     } else {
-      throw new Error("obj пустой");
+      throw new Error("Подблок не найден");
     }
   } catch (error) {
     console.error(error);

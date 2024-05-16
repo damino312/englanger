@@ -1,13 +1,24 @@
 "use client";
-import ModalComponent from "@/app/_components/modal-form";
+import ModalComponent from "@/app/(platform)/main/_components/modal-create-block";
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
+import { cn } from "@/lib/utils";
 import { useDisclosure } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import SettingsBtn from "./settings-btn";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/app/_components/ui/avatar";
 
-const Header = () => {
+interface HeaderProps {
+  roleId: number;
+}
+
+const Header = ({ roleId }: HeaderProps) => {
   const params = usePathname();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -19,22 +30,46 @@ const Header = () => {
             <Image src="/logo.svg" alt="logo" width={25} height={25} />
           </Link>
           <Link
-            href="/main/teaching"
-            className={params === "/main/teaching" ? " text-blue-700" : ""}
+            href={cn(
+              roleId === 1 && "/main/studying",
+              roleId === 2 && "/main/teaching"
+            )}
+            className={cn(
+              params === "/main/teaching" || params === "/main/studying"
+                ? " text-blue-700"
+                : ""
+            )}
           >
-            Я преподаю
+            {roleId === 1 && "Прохождение блоков"}
+            {roleId === 2 && "Созданные блоки"}
           </Link>
+
           <Link
-            href="/main/studying"
-            className={params === "/main/studying" ? " text-blue-700" : ""}
+            href={cn(
+              roleId === 1 && "/main/my-results",
+              roleId === 2 && "/main/results"
+            )}
+            className={cn(
+              params === "/main/my-results" || params === "/main/results"
+                ? " text-blue-700"
+                : ""
+            )}
           >
-            Я учу
+            Результаты
           </Link>
-          <Button variant="outline" onClick={onOpen}>
-            Создать блок
-          </Button>
+          {roleId !== 1 && (
+            <Button variant="outline" onClick={onOpen}>
+              Создать блок
+            </Button>
+          )}
         </div>
-        <Button>Настройки</Button>
+        <div className="flex gap-4">
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          <SettingsBtn />
+        </div>
       </div>
       <ModalComponent
         title="Создание блока"
@@ -50,7 +85,12 @@ const Header = () => {
             autoComplete="off"
             style={{ color: "black", fontWeight: 500 }}
           />
-          <Button type="submit" color="primary" size="lg">
+          <Button
+            onClick={onOpenChange}
+            type="submit"
+            color="primary"
+            size="lg"
+          >
             Создать
           </Button>
         </div>

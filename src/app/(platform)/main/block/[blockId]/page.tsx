@@ -2,22 +2,27 @@ import { db } from "@/lib/db";
 import CreateSubblockContainer from "./_components/create-subblock-container";
 import {
   AnswerTest,
+  AssignBlockGroup,
   Block,
   QuestionTest,
   SubblockDescription,
   SubblockOrder,
+  SubblockPronounce,
   SubblockTest,
 } from "@prisma/client";
 import SubblockContainer from "./_components/subblocks-container";
 import BlockSaveContainer from "./_components/block-save-container";
+import { redirect } from "next/navigation";
 
 export interface BlockData extends Block {
   subblock_orders: SubblockOrderData[];
+  assign_block_groups: AssignBlockGroup[] | null;
 }
 
 export interface SubblockOrderData extends SubblockOrder {
   subblock_test: SubblockTestData | null;
   subblock_description: SubblockDescription | null;
+  subblock_pronounce: SubblockPronounce | null;
 }
 
 export interface SubblockTestData extends SubblockTest {
@@ -47,18 +52,25 @@ const CreateBlockPage = async ({ params }: { params: { blockId: string } }) => {
             },
           },
           subblock_description: true,
+          subblock_pronounce: true,
         },
       },
     },
   });
 
+  if (!block) {
+    redirect("/main");
+  }
+
   const subblocksLength = block?.subblock_orders.length;
+
+  const subblockCount: number | undefined = block?.subblock_orders.length;
 
   return (
     <div className="w-full h-full pb-10">
-      <SubblockContainer data={block} />
+      <SubblockContainer data={block as any} />
       <CreateSubblockContainer subblocksLength={subblocksLength} />
-      <BlockSaveContainer blockId={blockId} />
+      <BlockSaveContainer blockId={blockId} subblockCount={subblockCount} />
     </div>
   );
 };

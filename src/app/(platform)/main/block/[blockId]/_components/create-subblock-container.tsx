@@ -7,6 +7,7 @@ import { useAction } from "@/hooks/use-action";
 import { createSubblockTest } from "@/actions/create-subblock-test";
 import { toast } from "sonner";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
+import { createSubblockPronounce } from "@/actions/create-subblock-pronounce";
 
 interface CreateSubblockContainerProps {
   subblocksLength: number | undefined;
@@ -35,6 +36,18 @@ const CreateSubblockContainer = ({
     },
   });
 
+  const { execute: executeCreateSubblockPronounce} = useAction(createSubblockPronounce, {
+    onSuccess: () => {
+      setSelectedSubblockId(0);
+      setShowSubblockPicker(false);
+      toast.success("Блок произношения создан");
+      router.refresh();
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       setSelectedSubblockId(0);
@@ -54,7 +67,18 @@ const CreateSubblockContainer = ({
     });
   };
   const onDescriptionSubmit = (formData: FormData) => {};
-  const onPronounicationSubmit = (formData: FormData) => {};
+  const onPronounicationSubmit = (formData: FormData) => {
+    const blockId = formData.get("blockId");
+    const subblockId = formData.get("selectedSubblockId");
+
+    executeCreateSubblockPronounce({
+      blockId: Number(blockId),
+      subblockTypeId: Number(subblockId),
+      name: "test",
+      order: (subblocksLength ?? 0) + 1,
+    });
+
+  };
 
   const onSubmit = (formData: FormData) => {
     const subblockId = formData.get("selectedSubblockId");
