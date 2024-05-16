@@ -44,7 +44,7 @@ const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
         }
       >
         <div>
-          {isCountExceeded && (
+          {assignMyInfo?.is_finished && isCountExceeded && (
             <p className="text-red-600">Попытки закончились</p>
           )}
 

@@ -76,7 +76,7 @@ const StudyingBlockItem = ({
           <span className="text-ellipsis" title={blockName}>
             {blockName}
           </span>
-          <div>
+          <div className="flex justify-between">
             <span>
               Попытки
               <span>
@@ -87,9 +87,7 @@ const StudyingBlockItem = ({
               </span>
               /<span>{assignGroupInfo?.max_try_count}</span>
             </span>
-            {assignMyInfo?.is_finished && !assignMyInfo?.is_finished && (
-              <span>В процессе</span>
-            )}
+            {!assignMyInfo?.is_finished && <span>В процессе</span>}
           </div>
         </div>
       </button>
