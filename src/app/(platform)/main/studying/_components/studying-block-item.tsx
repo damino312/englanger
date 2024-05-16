@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { AssignBlockGroup, AssignBlockUsers } from "@prisma/client";
+import { useState } from "react";
+import AlertDialogComponent from "../../_components/alert-dialogue-component";
 
 interface StudyingBlockItemProps {
   blockId: number;
@@ -25,39 +27,9 @@ const StudyingBlockItem = ({
   assignGroupInfo,
   assignMyInfo,
 }: StudyingBlockItemProps) => {
-  const session = useSession();
-  const router = useRouter();
 
-  const { execute } = useAction(startBlock, {
-    onSuccess: () => {
-      router.push("/main/test/" + blockId);
-    },
-    onError: (error) => {
-      toast.error(error);
-    },
-  });
-
-  function onAction() {
-    if (
-      (isCountExceeded && assignMyInfo?.is_finished === true) ||
-      isDeadlinePassed
-    ) {
-      toast.error("Вам не разрешено начать тестирование");
-      return null;
-    }
-
-    if (assignMyInfo?.is_finished === false) {
-      router.push("/main/test/" + blockId);
-      return null;
-    }
-    execute({
-      user_id: Number(session.data?.user.user_id),
-      assign_block_group_id: assignGroupInfo?.assign_block_group_id,
-      action: assignMyInfo ? "update" : "create",
-    });
-  }
   return (
-    <form action={onAction} className="h-full text-lg">
+    <div className="h-full text-lg">
       <button
         title={blockName}
         disabled={
@@ -91,7 +63,7 @@ const StudyingBlockItem = ({
           </div>
         </div>
       </button>
-    </form>
+    </div>
   );
 };
 

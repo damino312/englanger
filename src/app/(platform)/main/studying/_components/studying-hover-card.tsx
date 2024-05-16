@@ -1,7 +1,16 @@
+"use client";
+
 import { ExtendedBlock } from "./studying-block-container";
 import StudyingBlockItem from "./studying-block-item";
 import { HoverCardDemo } from "./hover-card";
 import { cn } from "@/lib/utils";
+import AlertDialogComponent from "../../_components/alert-dialogue-component";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useAction } from "@/hooks/use-action";
+import { startBlock } from "@/actions/start-block";
+import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 interface StudyingHoverCardProps {
   block: ExtendedBlock;
@@ -17,6 +26,39 @@ const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
     (prev, curr) => (prev.grade > curr.grade ? prev : curr),
     block.learning_outcomes[0] // Используем первый элемент как начальное значение
   );
+  const session = useSession();
+  const router = useRouter();
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const { execute } = useAction(startBlock, {
+    onSuccess: () => {
+      router.push("/main/test/" + block.block_id);
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+
+  function onAction() {
+    if (
+      (isCountExceeded && assignMyInfo?.is_finished === true) ||
+      isDeadlinePassed
+    ) {
+      toast.error("Вам не разрешено начать тестирование");
+      return null;
+    }
+
+    if (assignMyInfo?.is_finished === false) {
+      router.push("/main/test/" + block.block_id);
+      return null;
+    }
+    execute({
+      user_id: Number(session.data?.user.user_id),
+      assign_block_group_id: assignGroupInfo?.assign_block_group_id,
+      action: assignMyInfo ? "update" : "create",
+    });
+  }
 
   function checkTryCount() {
     if (
@@ -38,14 +80,16 @@ const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
       <HoverCardDemo
         triggerClassName="w-full max-w-[420px] "
         trigger={
-          <StudyingBlockItem
-            blockId={block.block_id}
-            blockName={block.name}
-            assignGroupInfo={assignGroupInfo}
-            assignMyInfo={assignMyInfo}
-            isCountExceeded={isCountExceeded}
-            isDeadlinePassed={isDeadlinePassed}
-          />
+          <div onClick={() => setIsOpen(true)}>
+            <StudyingBlockItem
+              blockId={block.block_id}
+              blockName={block.name}
+              assignGroupInfo={assignGroupInfo}
+              assignMyInfo={assignMyInfo}
+              isCountExceeded={isCountExceeded}
+              isDeadlinePassed={isDeadlinePassed}
+            />
+          </div>
         }
       >
         <div>
@@ -62,6 +106,23 @@ const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
           {bestResult && <p>Лучший результат: {bestResult.grade}%</p>}
         </div>
       </HoverCardDemo>
+
+      <AlertDialogComponent
+        title="Создание блока"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        description={
+          !assignMyInfo?.is_finished
+            ? "Вы уверены, что хотите продолжить?"
+            : "Вы уверены, что хотите начать?"
+        }
+      >
+        <form action={onAction}>
+          <button className="w-full">
+            {!assignMyInfo?.is_finished ? "Продолжить" : "Начать"}
+          </button>
+        </form>
+      </AlertDialogComponent>
     </>
   );
 };
