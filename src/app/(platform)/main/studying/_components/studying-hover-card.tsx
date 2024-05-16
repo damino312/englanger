@@ -13,6 +13,11 @@ const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
   const isCountExceeded = checkTryCount();
   const isDeadlinePassed = checkDeadline();
 
+  const bestResult = block?.learning_outcomes?.reduce(
+    (prev, curr) => (prev.grade > curr.grade ? prev : curr),
+    block.learning_outcomes[0] // Используем первый элемент как начальное значение
+  );
+
   function checkTryCount() {
     if (
       (assignMyInfo?.current_try_count ?? 0) >= assignGroupInfo.max_try_count
@@ -54,6 +59,7 @@ const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
               timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             })}
           </p>
+          {bestResult && <p>Лучший результат: {bestResult.grade}%</p>}
         </div>
       </HoverCardDemo>
     </>
