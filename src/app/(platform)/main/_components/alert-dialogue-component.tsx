@@ -16,16 +16,18 @@ export default function AlertDialogComponent({
   onOpenChange,
   title,
   description,
+  className,
 }: {
   children: React.ReactNode;
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   title: string;
-  description: string;
+  description: React.ReactNode | string;
+  className?: string;
 }) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent className={className}>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>

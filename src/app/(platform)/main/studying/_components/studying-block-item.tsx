@@ -1,14 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useAction } from "@/hooks/use-action";
-import { startBlock } from "@/actions/start-block";
-import { toast } from "sonner";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { AssignBlockGroup, AssignBlockUsers } from "@prisma/client";
-import { useState } from "react";
-import AlertDialogComponent from "../../_components/alert-dialogue-component";
 
 interface StudyingBlockItemProps {
   blockId: number;
@@ -27,7 +20,6 @@ const StudyingBlockItem = ({
   assignGroupInfo,
   assignMyInfo,
 }: StudyingBlockItemProps) => {
-
   return (
     <div className="h-full text-lg">
       <button
@@ -59,7 +51,7 @@ const StudyingBlockItem = ({
               </span>
               /<span>{assignGroupInfo?.max_try_count}</span>
             </span>
-            {!assignMyInfo?.is_finished && <span>В процессе</span>}
+            {assignMyInfo?.is_finished === false && <span>В процессе</span>}
           </div>
         </div>
       </button>
