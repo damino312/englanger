@@ -80,7 +80,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     if (block) {
       const allTestsInBlock = block.subblock_orders
         .map((order) => order.subblock_test_id)
-        .filter((id) => id !== null);
+        .filter((id): id is number => id !== null);
 
       const totalQuestionCount = await db.questionTest.findMany({
         where: {
@@ -132,12 +132,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       });
       revalidateTag("blocks");
       return { data: createdLearningOutcome };
-
-      // console.log({
-      //   gradePercentage: gradePercentage,
-      //   totalQuestionCount: totalQuestionCount.length,
-      //   rightAnswersCount: rightAnswersCount,
-      // });
     } else {
       throw new Error("Блок не найден");
     }

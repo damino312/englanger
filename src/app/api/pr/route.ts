@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import { writeFile } from "fs/promises";
 import fs from "fs";
 import FormData from "form-data";
 import axios from "axios";
 
-export const POST = async (req, res) => {
+export const POST = async (req: NextRequest, res: NextRequest) => {
   const formData = await req.formData();
 
   const file = formData.get("audio");
@@ -13,10 +13,9 @@ export const POST = async (req, res) => {
   if (!file) {
     return NextResponse.json({ error: "No files received." }, { status: 400 });
   }
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const filename = file.name.replaceAll(" ", "_");
-  console.log(filename);
+  const audioFile = file as File;
+  const buffer = Buffer.from(await audioFile.arrayBuffer());
+  const filename = audioFile.name.replaceAll(" ", "_");
   try {
     await writeFile(
       path.join(process.cwd(), "public/assets/" + filename),
