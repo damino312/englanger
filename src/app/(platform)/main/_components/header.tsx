@@ -1,18 +1,21 @@
 "use client";
-import ModalComponent from "@/app/(platform)/main/_components/modal-create-block";
+import ModalComponent from "@/app/(platform)/main/_components/modal-component";
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
 import { cn } from "@/lib/utils";
 import { useDisclosure } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import SettingsBtn from "./settings-btn";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/app/_components/ui/avatar";
+import { toast } from "sonner";
+import { useAction } from "@/hooks/use-action";
+import { createBlock } from "@/actions/create-block";
 
 interface HeaderProps {
   roleId: number;
@@ -21,6 +24,23 @@ interface HeaderProps {
 const Header = ({ roleId }: HeaderProps) => {
   const params = usePathname();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const route = useRouter();
+  const { execute } = useAction(createBlock, {
+    onSuccess: (data) => {
+      toast.success("Блок создан");
+      route.push(`/main/block/${data.block_id}`);
+    },
+    onError: (error) => {
+      console.log(error);
+      toast.error(error);
+    },
+  });
+
+  const onCreateBlock = (formData: FormData) => {
+    const name = formData.get("name") as string;
+    execute({ name });
+  };
 
   return (
     <div className="w-full h-[80px] border-b shadow-lg mb-6">
@@ -76,24 +96,26 @@ const Header = ({ roleId }: HeaderProps) => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
       >
-        <div className="flex flex-col gap-4 pt-2">
-          <Input
-            name="name"
-            id="name"
-            type="text"
-            placeholder="Введите имя учебного блока"
-            autoComplete="off"
-            style={{ color: "black", fontWeight: 500 }}
-          />
-          <Button
-            onClick={onOpenChange}
-            type="submit"
-            color="primary"
-            size="lg"
-          >
-            Создать
-          </Button>
-        </div>
+        <form action={onCreateBlock}>
+          <div className="flex flex-col gap-4 pt-2">
+            <Input
+              name="name"
+              id="name"
+              type="text"
+              placeholder="Введите имя учебного блока"
+              autoComplete="off"
+              style={{ color: "black", fontWeight: 500 }}
+            />
+            <Button
+              onClick={onOpenChange}
+              type="submit"
+              color="primary"
+              size="lg"
+            >
+              Создать
+            </Button>
+          </div>
+        </form>
       </ModalComponent>
     </div>
   );
