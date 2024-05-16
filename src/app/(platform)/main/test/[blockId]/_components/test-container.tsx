@@ -3,7 +3,7 @@
 import { useAction } from "@/hooks/use-action";
 import { BlockData } from "../../../block/[blockId]/page";
 import SubblockTest from "./subblock-test";
-import { createLearningOutcome } from "@/actions/create-learning-outcome";
+import { finishBlock } from "@/actions/finish-block";
 import { Button } from "@/app/_components/ui/button";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
@@ -23,7 +23,7 @@ const TestContainer = ({ block }: TestContainerProps) => {
   const session = useSession();
   const router = useRouter();
   const userId = Number(session.data?.user.user_id);
-  const { execute } = useAction(createLearningOutcome, {
+  const { execute } = useAction(finishBlock, {
     onSuccess: () => {
       toast.success("Тест завершен");
       router.push("/main");

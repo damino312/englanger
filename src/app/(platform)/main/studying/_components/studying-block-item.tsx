@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useAction } from "@/hooks/use-action";
-import { createAssignBlockUser } from "@/actions/create-assign-block-user";
+import { startBlock } from "@/actions/start-block";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -28,7 +28,7 @@ const StudyingBlockItem = ({
   const session = useSession();
   const router = useRouter();
 
-  const { execute } = useAction(createAssignBlockUser, {
+  const { execute } = useAction(startBlock, {
     onSuccess: () => {
       router.push("/main/test/" + blockId);
     },
@@ -38,28 +38,36 @@ const StudyingBlockItem = ({
   });
 
   function onAction() {
-    if (isCountExceeded || isDeadlinePassed) {
+    if (
+      (isCountExceeded && assignMyInfo?.is_finished === true) ||
+      isDeadlinePassed
+    ) {
       toast.error("Вам не разрешено начать тестирование");
       return null;
     }
 
-    if (assignMyInfo) {
+    if (assignMyInfo?.is_finished === false) {
       router.push("/main/test/" + blockId);
       return null;
     }
     execute({
       user_id: Number(session.data?.user.user_id),
       assign_block_group_id: assignGroupInfo?.assign_block_group_id,
+      action: assignMyInfo ? "update" : "create",
     });
   }
   return (
     <form action={onAction} className="h-full text-lg">
       <button
         title={blockName}
-        disabled={isCountExceeded || isDeadlinePassed}
+        disabled={
+          (isCountExceeded && assignMyInfo?.is_finished === true) ||
+          isDeadlinePassed
+        }
         className={cn(
           "p-3 min-h-[120px] h-full  w-full bg-slate-400 rounded-md transition-colors",
-          isCountExceeded || isDeadlinePassed
+          (isCountExceeded && assignMyInfo?.is_finished === true) ||
+            isDeadlinePassed
             ? "cursor-not-allowed"
             : "cursor-pointer hover:bg-slate-300"
         )}

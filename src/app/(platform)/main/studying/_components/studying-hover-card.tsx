@@ -10,14 +10,8 @@ interface StudyingHoverCardProps {
 const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
   const assignGroupInfo = block.assign_block_groups?.[0];
   const assignMyInfo = assignGroupInfo?.assign_block_users?.[0];
-  const lastResult = block.learning_outcomes?.[0];
   const isCountExceeded = checkTryCount();
   const isDeadlinePassed = checkDeadline();
-
-  // const bestResult = block?.learning_outcomes?.reduce(
-  //   (prev, curr) => (prev?.grade > curr?.grade ? prev : curr),
-  //   []
-  // );
 
   function checkTryCount() {
     if (
@@ -60,7 +54,6 @@ const StudyingHoverCard = ({ block }: StudyingHoverCardProps) => {
               timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             })}
           </p>
-          {/* {bestResult && <p>Лучший результат, % : {bestResult.grade}</p>} */}
         </div>
       </HoverCardDemo>
     </>

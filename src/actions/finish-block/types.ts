@@ -3,7 +3,7 @@ import { LearningOutcome } from "@prisma/client";
 
 import { ActionState } from "@/lib/create-safe-action";
 
-import { CreateLearningOutcome } from "./schema";
+import { FinishBlock } from "./schema";
 
-export type InputType = z.infer<typeof CreateLearningOutcome>;
+export type InputType = z.infer<typeof FinishBlock>;
 export type ReturnType = ActionState<InputType, LearningOutcome>;
