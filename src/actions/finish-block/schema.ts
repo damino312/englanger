@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const CreateLearningOutcome = z.object({
+export const FinishBlock = z.object({
   answer_array: z.array(
     z.object({
       question_id: z.number(),

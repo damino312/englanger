@@ -8,13 +8,6 @@ import {
   MenubarContent,
   MenubarItem,
   MenubarSeparator,
-  MenubarShortcut,
-  MenubarSub,
-  MenubarSubTrigger,
-  MenubarSubContent,
-  MenubarCheckboxItem,
-  MenubarRadioGroup,
-  MenubarRadioItem,
 } from "@/app/_components/ui/menubar";
 
 import { signOut } from "next-auth/react";

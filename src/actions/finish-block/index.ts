@@ -3,7 +3,7 @@
 import { InputType, ReturnType } from "./types";
 import { db } from "@/lib/db";
 import { createSafeAction } from "@/lib/create-safe-action";
-import { CreateLearningOutcome } from "./schema";
+import { FinishBlock } from "./schema";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { LearningOutcome } from "@prisma/client";
@@ -124,7 +124,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
           },
           data: {
             is_finished: true,
-            current_try_count: foundAssignBlockUser?.current_try_count + 1,
           },
         });
 
@@ -143,7 +142,4 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   }
 };
 
-export const createLearningOutcome = createSafeAction(
-  CreateLearningOutcome,
-  handler
-);
+export const finishBlock = createSafeAction(FinishBlock, handler);

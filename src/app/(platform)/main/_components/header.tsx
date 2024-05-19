@@ -1,18 +1,24 @@
 "use client";
-import ModalComponent from "@/app/(platform)/main/_components/modal-create-block";
+import ModalComponent from "@/app/(platform)/main/_components/modal-component";
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
 import { cn } from "@/lib/utils";
 import { useDisclosure } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import SettingsBtn from "./settings-btn";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/app/_components/ui/avatar";
+import { toast } from "sonner";
+import { useAction } from "@/hooks/use-action";
+import { createBlock } from "@/actions/create-block";
+import { FormInput } from "@/app/_components/form/form-input";
+import { FormSubmit } from "@/app/_components/form/form-submit";
+import { useState } from "react";
 
 interface HeaderProps {
   roleId: number;
@@ -20,12 +26,29 @@ interface HeaderProps {
 
 const Header = ({ roleId }: HeaderProps) => {
   const params = usePathname();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const route = useRouter();
+  const { execute } = useAction(createBlock, {
+    onSuccess: (data) => {
+      setIsOpen(false);
+      toast.success("Блок создан");
+      route.push(`/main/block/${data.block_id}`);
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+
+  const onCreateBlock = (formData: FormData) => {
+    const name = formData.get("name") as string;
+    execute({ name });
+  };
 
   return (
     <div className="w-full h-[80px] border-b shadow-lg mb-6">
       <div className="px-32 w-full h-full flex items-center justify-between">
-        <div className="flex gap-8 items-center">
+        <div className="flex gap-8 items-center font-semibold">
           <Link href="/main">
             <Image src="/logo.svg" alt="logo" width={25} height={25} />
           </Link>
@@ -40,8 +63,7 @@ const Header = ({ roleId }: HeaderProps) => {
                 : ""
             )}
           >
-            {roleId === 1 && "Прохождение блоков"}
-            {roleId === 2 && "Созданные блоки"}
+            Учебные блоки
           </Link>
 
           <Link
@@ -58,7 +80,7 @@ const Header = ({ roleId }: HeaderProps) => {
             Результаты
           </Link>
           {roleId !== 1 && (
-            <Button variant="outline" onClick={onOpen}>
+            <Button variant="outline" onClick={() => setIsOpen(true)}>
               Создать блок
             </Button>
           )}
@@ -74,26 +96,20 @@ const Header = ({ roleId }: HeaderProps) => {
       <ModalComponent
         title="Создание блока"
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={setIsOpen}
       >
-        <div className="flex flex-col gap-4 pt-2">
-          <Input
-            name="name"
-            id="name"
-            type="text"
-            placeholder="Введите имя учебного блока"
-            autoComplete="off"
-            style={{ color: "black", fontWeight: 500 }}
-          />
-          <Button
-            onClick={onOpenChange}
-            type="submit"
-            color="primary"
-            size="lg"
-          >
-            Создать
-          </Button>
-        </div>
+        <form action={onCreateBlock}>
+          <div className="flex flex-col gap-4 pt-2">
+            <FormInput
+              name="name"
+              id="name"
+              type="text"
+              placeholder="Введите имя учебного блока"
+              className="text-black, font-medium"
+            />
+            <FormSubmit>Создать</FormSubmit>
+          </div>
+        </form>
       </ModalComponent>
     </div>
   );
