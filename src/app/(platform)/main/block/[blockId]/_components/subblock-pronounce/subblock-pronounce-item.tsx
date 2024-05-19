@@ -8,6 +8,7 @@ import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { updatePronounceItem } from "@/actions/update-pronounce-item";
 import { FormErrors } from "@/app/_components/form/form-errors";
 import { createPronounceItem } from "@/actions/create-pronounce-item";
+import { deletePronounceItem } from "@/actions/delete-pronounce-item";
 
 interface SubblockPronounceProps {
   pronounceItemId: number;
@@ -43,6 +44,18 @@ const SubblockPronounceItem = ({
     }
   );
 
+  const { execute: executeDeletePronounceItem } = useAction(
+    deletePronounceItem,
+    {
+      onSuccess: () => {
+        toast.success("Пункт удален");
+      },
+      onError: (error) => {
+        toast.error(error);
+      },
+    }
+  );
+
   function onChangeValue() {
     setIsValueEditing(true);
     setTimeout(() => {
@@ -70,6 +83,12 @@ const SubblockPronounceItem = ({
     });
   }
 
+  function handleDeletePronounceItem() {
+    executeDeletePronounceItem({
+      pronounce_item_id: pronounceItemId,
+    });
+  }
+
   return (
     <>
       {/* <div>
@@ -87,12 +106,32 @@ const SubblockPronounceItem = ({
           />
         </form>
       ) : (
-        <p onClick={onChangeValue}>
-          <span className="font-semibold" title="Для произношения учеником">
-            Слово или фраза:{" "}
-          </span>
-          {value || "Слово"}
-        </p>
+        <div className="flex items-center gap-4 ">
+          <p onClick={onChangeValue}>
+            <span className="font-semibold" title="Для произношения учеником">
+              Слово или фраза:{" "}
+            </span>
+            {value || "Слово"}
+          </p>
+          <form action={handleDeletePronounceItem}>
+            <button className="group p-2 ">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-7 h-7 group-hover:stroke-red-500"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            </button>
+          </form>
+        </div>
       )}
     </>
   );

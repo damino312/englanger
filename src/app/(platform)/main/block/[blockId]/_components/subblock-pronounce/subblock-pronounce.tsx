@@ -18,7 +18,6 @@ interface SubblockPronounceProps {
 }
 
 const SubblockPronounce = ({ blockId, subblock }: SubblockPronounceProps) => {
-  const router = useRouter();
   const [isNameEditing, setIsNameEditing] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
 
@@ -114,8 +113,12 @@ const SubblockPronounce = ({ blockId, subblock }: SubblockPronounceProps) => {
         )}
       </div>
 
-      {subblock.subblock_pronounce?.pronounce_items?.map(
-        (pronounceItem, index) => (
+      {subblock.subblock_pronounce?.pronounce_items
+        ?.sort(
+          (a, b) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        )
+        .map((pronounceItem, index) => (
           <SubblockPronounceItem
             key={pronounceItem.pronounce_item_id}
             subblockPronounceId={pronounceItem.subblock_pronounce_id}
@@ -124,8 +127,7 @@ const SubblockPronounce = ({ blockId, subblock }: SubblockPronounceProps) => {
             value={pronounceItem.value}
             index={index}
           />
-        )
-      )}
+        ))}
       <form
         action={handleCreatePronounceItem}
         className="w-full flex justify-center mt-4 "
