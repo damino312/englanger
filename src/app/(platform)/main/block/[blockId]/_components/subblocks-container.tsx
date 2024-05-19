@@ -9,7 +9,7 @@ import { updateBlock } from "@/actions/update-block";
 import { useAction } from "@/hooks/use-action";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { useRouter } from "next/navigation";
-import SubblockPronounce from "./subblock-pronounce";
+import SubblockPronounce from "./subblock-pronounce/subblock-pronounce";
 
 const SubblockContainer = ({ data }: { data: BlockData | null }) => {
   const router = useRouter();
@@ -86,7 +86,6 @@ const SubblockContainer = ({ data }: { data: BlockData | null }) => {
         data.subblock_orders
           .sort((a, b) => a.order - b.order)
           .map((subblock) => {
-            console.log(subblock);
             if (subblock.subblock_pronounce_id) {
               return (
                 <SubblockPronounce

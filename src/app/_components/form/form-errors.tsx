@@ -1,4 +1,3 @@
-import { error } from "console";
 import { XCircle } from "lucide-react";
 
 interface FormErrorsProps {
@@ -8,6 +7,7 @@ interface FormErrorsProps {
 
 export const FormErrors = ({ id, errors }: FormErrorsProps) => {
   if (!errors) return null;
+  console.log(errors, id);
   return (
     <div
       id={`${id}-error`}

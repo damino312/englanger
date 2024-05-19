@@ -3,7 +3,7 @@
 import { InputType, ReturnType } from "./types";
 import { db } from "@/lib/db";
 import { createSafeAction } from "@/lib/create-safe-action";
-import { UpdateSubblockPronounce } from "./schema";
+import { UpdatePronounceItem } from "./schema";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { revalidateTag } from "next/cache";
@@ -17,15 +17,15 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       error: "Необходима авторизация",
     };
   }
-  const { subblock_pronounce_id, name, description } = data;
+  const { pronounce_item_id, name, value } = data;
   try {
-    const updatedSubblockTest = await db.subblockPronounce.update({
+    const updatedSubblockTest = await db.pronounceItem.update({
       where: {
-        subblock_pronounce_id: subblock_pronounce_id,
+        pronounce_item_id: pronounce_item_id,
       },
       data: {
         name: name,
-        description: description,
+        value: value,
       },
     });
     revalidateTag("pronounce");
@@ -38,7 +38,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   }
 };
 
-export const updateSubblockPronounce = createSafeAction(
-  UpdateSubblockPronounce,
+export const updatePronounceItem = createSafeAction(
+  UpdatePronounceItem,
   handler
 );
