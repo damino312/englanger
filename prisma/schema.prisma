@@ -68,30 +68,41 @@ model SubblockOrder {
   updated_at              DateTime             @updatedAt
   subblock_description_id Int?
   subblock_test_id        Int?
-  name                    String?
   subblock_pronounce_id   Int?
   block                   Block                @relation(fields: [block_id], references: [block_id], onDelete: Cascade)
-  subblock_description    SubblockDescription? @relation(fields: [subblock_description_id], references: [subblock_description_id])
-  subblock_pronounce      SubblockPronounce?   @relation(fields: [subblock_pronounce_id], references: [subblock_pronounce_id])
-  subblock_test           SubblockTest?        @relation(fields: [subblock_test_id], references: [subblock_test_id])
+  subblock_description    SubblockDescription? @relation(fields: [subblock_description_id], references: [subblock_description_id], onDelete: Cascade)
+  subblock_pronounce      SubblockPronounce?   @relation(fields: [subblock_pronounce_id], references: [subblock_pronounce_id],  onDelete: Cascade)
+  subblock_test           SubblockTest?        @relation(fields: [subblock_test_id], references: [subblock_test_id],  onDelete: Cascade)
 }
 
 model SubblockPronounce {
   subblock_pronounce_id Int             @id @default(autoincrement())
   subblock_type_id      Int
   name                  String
-  description           String
-  value                 String
+  description           String?         @default("Произношение")
   created_at            DateTime        @default(now())
   updated_at            DateTime        @updatedAt
   subblock_type         SubblockType    @relation(fields: [subblock_type_id], references: [subblock_type_id])
-  subblock_orders       SubblockOrder[]
+  subblock_order        SubblockOrder[]
+  pronounce_items       PronounceItem[]
+}
+
+model PronounceItem {
+  pronounce_item_id Int             @id @default(autoincrement())
+  subblock_pronounce_id Int
+  order               Int
+  name              String
+  value               String
+  created_at          DateTime        @default(now())
+  updated_at          DateTime        @updatedAt
+  subblock_pronounce   SubblockPronounce @relation(fields: [subblock_pronounce_id], references: [subblock_pronounce_id], onDelete: Cascade)
 }
 
 model SubblockDescription {
   subblock_description_id Int             @id @default(autoincrement())
   subblock_type_id        Int
-  description             String
+  name                    String
+  description             String          @default("Описание")
   created_at              DateTime        @default(now())
   updated_at              DateTime        @updatedAt
   subblock_type           SubblockType    @relation(fields: [subblock_type_id], references: [subblock_type_id])
@@ -112,6 +123,7 @@ model SubblockType {
 model SubblockTest {
   subblock_test_id Int             @id @default(autoincrement())
   subblock_type_id Int
+  name             String          @default("Тест")
   created_at       DateTime        @default(now())
   updated_at       DateTime        @updatedAt
   subblock_type    SubblockType    @relation(fields: [subblock_type_id], references: [subblock_type_id])

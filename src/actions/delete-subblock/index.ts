@@ -17,31 +17,22 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   const { subblock_id, type } = data;
 
   try {
-    let foundOrder;
-
     if (type === 1) {
-      foundOrder = await db.subblockOrder.findFirst({
+      const deletedSubblock = await db.subblockTest.delete({
         where: {
           subblock_test_id: subblock_id,
         },
       });
+      return { data: deletedSubblock };
     } else if (type === 2) {
-      foundOrder = await db.subblockOrder.findFirst({
+      const deletedSubblock = await db.subblockPronounce.delete({
         where: {
           subblock_pronounce_id: subblock_id,
         },
       });
+      return { data: deletedSubblock };
     } else {
       throw new Error("Неверный тип подблока");
-    }
-
-    if (foundOrder) {
-      const deletedOrder = await db.subblockOrder.delete({
-        where: foundOrder,
-      });
-      return { data: deletedOrder };
-    } else {
-      throw new Error("Подблок не найден");
     }
   } catch (error) {
     console.error(error);

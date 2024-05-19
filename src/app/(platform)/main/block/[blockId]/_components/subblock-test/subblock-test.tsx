@@ -79,14 +79,11 @@ const SubblockTest = ({
   };
 
   const onRenameSubblock = (formData: FormData) => {
-    const subblockId = formData.get("subblock_order_id");
     const name = formData.get("name");
-    const order = formData.get("order");
 
     updateSubblockTestExecute({
-      subblock_order_id: Number(subblockId),
+      subblock_test_id: subblock.subblock_test_id as number,
       name: String(name),
-      order: Number(order),
     });
   };
 
@@ -103,22 +100,16 @@ const SubblockTest = ({
               id="subblock_id"
               name="name"
               ref={inputRef}
-              defaultValue={subblock.name as string}
+              defaultValue={subblock.subblock_test?.name as string}
             />
-            <input
-              type="hidden"
-              name="subblock_order_id"
-              value={subblock.subblock_order_id}
-            />
-            <input type="hidden" name="order" value={subblock.order} />
           </form>
         ) : (
           <div className="w-full flex items-center justify-between">
             <h3
-              className="text-2xl ml-12 font-semibold"
+              className="text-2xl ml-12 font-semibold break-all"
               onClick={enableRenaming}
             >
-              Название подблока: {subblock.name}
+              Название подблока: {subblock.subblock_test?.name}
             </h3>
             <SubblockDeleteForm
               subblockId={subblock.subblock_test_id as number}
@@ -129,7 +120,7 @@ const SubblockTest = ({
       </div>
 
       {subblock.subblock_test?.test_questions
-        .sort((a, b) => a.order - b.order)
+        ?.sort((a, b) => a.order - b.order)
         .map((question, index) => (
           <SubblockTestQuestion
             key={question.question_test_id}
@@ -167,7 +158,7 @@ const SubblockTest = ({
         <input
           type="hidden"
           name="order"
-          value={(subblock.subblock_test?.test_questions.length ?? 0) + 1}
+          value={(subblock.subblock_test?.test_questions?.length ?? 0) + 1}
         />
       </form>
     </div>

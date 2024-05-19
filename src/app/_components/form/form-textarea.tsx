@@ -5,7 +5,7 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { cn } from "@/lib/utils";
 import { FormErrors } from "./form-errors";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 
 interface FormTextareaProps {
   id: string;

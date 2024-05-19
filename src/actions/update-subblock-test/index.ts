@@ -16,15 +16,14 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       error: "Необходима авторизация",
     };
   }
-  const { subblock_order_id, name, order } = data;
+  const { subblock_test_id, name } = data;
   try {
-    const updatedSubblockTest = await db.subblockOrder.update({
+    const updatedSubblockTest = await db.subblockTest.update({
       where: {
-        subblock_order_id: subblock_order_id,
+        subblock_test_id: subblock_test_id,
       },
       data: {
         name: name,
-        order: order,
       },
     });
 
