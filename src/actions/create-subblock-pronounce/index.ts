@@ -22,16 +22,21 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         data: {
           subblock_type_id: data.subblockTypeId,
           name: "Произношение",
-          description: 'Описание',
-          value: 'Слово',
         },
       });
       const subblockOrder = await db.subblockOrder.create({
         data: {
-          name: data.name,
           block_id: data.blockId,
           order: data.order,
           subblock_pronounce_id: subblockPronounce.subblock_pronounce_id,
+        },
+      });
+      const createdPronounceItem = await db.pronounceItem.create({
+        data: {
+          subblock_pronounce_id: subblockPronounce.subblock_pronounce_id,
+          order: 1,
+          name: "Описание",
+          value: "Слово или фраза",
         },
       });
 
@@ -46,4 +51,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   }
 };
 
-export const createSubblockPronounce = createSafeAction(CreateSubblockPronounce, handler);
+export const createSubblockPronounce = createSafeAction(
+  CreateSubblockPronounce,
+  handler
+);

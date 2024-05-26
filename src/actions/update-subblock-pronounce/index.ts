@@ -17,7 +17,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       error: "Необходима авторизация",
     };
   }
-  const { subblock_pronounce_id, name, description, value } = data;
+  const { subblock_pronounce_id, name, description } = data;
   try {
     const updatedSubblockTest = await db.subblockPronounce.update({
       where: {
@@ -26,7 +26,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       data: {
         name: name,
         description: description,
-        value: value,
       },
     });
     revalidateTag("pronounce");

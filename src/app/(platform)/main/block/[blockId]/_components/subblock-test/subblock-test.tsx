@@ -79,57 +79,46 @@ const SubblockTest = ({
   };
 
   const onRenameSubblock = (formData: FormData) => {
-    const subblockId = formData.get("subblock_order_id");
     const name = formData.get("name");
-    const order = formData.get("order");
 
     updateSubblockTestExecute({
-      subblock_order_id: Number(subblockId),
+      subblock_test_id: subblock.subblock_test_id as number,
       name: String(name),
-      order: Number(order),
     });
   };
 
   return (
     <div className="border border-black rounded-2xl p-2 mx-2 mb-8">
-      <div className="flex items-center justify-between">
-        {isRenaming ? (
-          <form
-            action={onRenameSubblock}
-            ref={formRef}
-            className="ml-12 min-w-[150px] max-w-full w-full "
+      {isRenaming ? (
+        <form
+          action={onRenameSubblock}
+          ref={formRef}
+          className="mx-10 max-w-full min-w-[150px] my-3 "
+        >
+          <FormInput
+            id="subblock_id"
+            name="name"
+            ref={inputRef}
+            defaultValue={subblock.subblock_test?.name as string}
+          />
+        </form>
+      ) : (
+        <div className="w-full flex items-center justify-between">
+          <h3
+            className="text-2xl ml-12 font-semibold break-all"
+            onClick={enableRenaming}
           >
-            <FormInput
-              id="subblock_id"
-              name="name"
-              ref={inputRef}
-              defaultValue={subblock.name as string}
-            />
-            <input
-              type="hidden"
-              name="subblock_order_id"
-              value={subblock.subblock_order_id}
-            />
-            <input type="hidden" name="order" value={subblock.order} />
-          </form>
-        ) : (
-          <div className="w-full flex items-center justify-between">
-            <h3
-              className="text-2xl ml-12 font-semibold"
-              onClick={enableRenaming}
-            >
-              Название подблока: {subblock.name}
-            </h3>
-            <SubblockDeleteForm
-              subblockId={subblock.subblock_test_id as number}
-              type={1}
-            />
-          </div>
-        )}
-      </div>
+            Название подблока: {subblock.subblock_test?.name}
+          </h3>
+          <SubblockDeleteForm
+            subblockId={subblock.subblock_test_id as number}
+            type={1}
+          />
+        </div>
+      )}
 
       {subblock.subblock_test?.test_questions
-        .sort((a, b) => a.order - b.order)
+        ?.sort((a, b) => a.order - b.order)
         .map((question, index) => (
           <SubblockTestQuestion
             key={question.question_test_id}
@@ -167,7 +156,7 @@ const SubblockTest = ({
         <input
           type="hidden"
           name="order"
-          value={(subblock.subblock_test?.test_questions.length ?? 0) + 1}
+          value={(subblock.subblock_test?.test_questions?.length ?? 0) + 1}
         />
       </form>
     </div>

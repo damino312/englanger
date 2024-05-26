@@ -21,11 +21,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       const testSubblock = await db.subblockTest.create({
         data: {
           subblock_type_id: data.subblockTypeId,
+          name: "Тест",
         },
       });
       const subblockOrder = await db.subblockOrder.create({
         data: {
-          name: data.name,
           block_id: data.blockId,
           order: data.order,
           subblock_test_id: testSubblock.subblock_test_id,

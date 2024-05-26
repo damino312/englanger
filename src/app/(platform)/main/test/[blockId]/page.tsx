@@ -3,6 +3,7 @@ import TestContainer from "./_components/test-container";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
+import { BlockData } from "../../block/[blockId]/page";
 
 const TestPage = async ({ params }: { params: { blockId: string } }) => {
   const session = await getServerSession(authOptions);
@@ -26,7 +27,11 @@ const TestPage = async ({ params }: { params: { blockId: string } }) => {
             },
           },
           subblock_description: true,
-          subblock_pronounce: true,
+          subblock_pronounce: {
+            include: {
+              pronounce_items: true,
+            },
+          },
         },
       },
     },
@@ -80,8 +85,8 @@ const TestPage = async ({ params }: { params: { blockId: string } }) => {
   }
 
   return (
-    <div className="w-full h-full px-32">
-      <TestContainer block={block as any} />
+    <div className="w-full h-full px-32 pb-10">
+      <TestContainer block={block as BlockData} />
     </div>
   );
 };

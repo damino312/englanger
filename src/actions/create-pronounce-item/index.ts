@@ -3,9 +3,10 @@
 import { InputType, ReturnType } from "./types";
 import { db } from "@/lib/db";
 import { createSafeAction } from "@/lib/create-safe-action";
-import { UpdateSubblockTest } from "./schema";
+import { CreatePronounceItem } from "./schema";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 // import { createAuditLog } from "@/lib/create-audit-log";
 // import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
@@ -16,24 +17,32 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       error: "Необходима авторизация",
     };
   }
-  const { subblock_test_id, name } = data;
+  const { subblock_pronounce_id } = data;
   try {
-    const updatedSubblockTest = await db.subblockTest.update({
+    const pronounceItemsOfSubblock = await db.pronounceItem.count({
       where: {
-        subblock_test_id: subblock_test_id,
-      },
-      data: {
-        name: name,
+        subblock_pronounce_id,
       },
     });
-
-    return { data: updatedSubblockTest };
+    const createdPronounceItem = await db.pronounceItem.create({
+      data: {
+        subblock_pronounce_id,
+        order: pronounceItemsOfSubblock + 1,
+        name: "Название",
+        value: "A word or a phrase",
+      },
+    });
+    revalidateTag("pronounceItems");
+    return { data: createdPronounceItem };
   } catch (error) {
     console.error(error);
     return {
-      error: "Не переименовать подблок",
+      error: "Не удалось создать вопрос",
     };
   }
 };
 
-export const updateSubblockTest = createSafeAction(UpdateSubblockTest, handler);
+export const createPronounceItem = createSafeAction(
+  CreatePronounceItem,
+  handler
+);
