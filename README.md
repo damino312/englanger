@@ -2,17 +2,13 @@
 Оно предоставляет интерфейс для взаимодействия с базой данных как преподавателям, так и студен-там.
 Преподаватели могут работать с информацией об учебных модулях и учебных материалах, а студенты могут проходить ранее созданные учебные модули.
 
-https://github.com/damino312/englanger/assets/93064817/bb4d1d36-a21c-40a4-8431-aac1961a21c4
+https://github.com/damino312/englanger/assets/93064817/3f49407c-1792-479c-8b4a-889604e3bcec
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
 First, run the development server:
-
-
-
-
 
 ```bash
 npm run dev
